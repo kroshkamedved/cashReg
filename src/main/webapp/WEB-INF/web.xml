@@ -1,0 +1,27 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+
+    <servlet>
+        <servlet-name>admin_jsp</servlet-name>
+        <jsp-file>/WEB-INF/view/admin_page.jsp</jsp-file>
+    </servlet>
+    <filter>
+        <filter-name>authenticationFilter</filter-name>
+        <filter-class>com.elearn.controller.filters.AuthenticationFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>authenticationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <servlet-mapping>
+        <servlet-name>admin_jsp</servlet-name>
+        <url-pattern>/admin_page.jsp</url-pattern>
+    </servlet-mapping>
+
+
+</web-app>
