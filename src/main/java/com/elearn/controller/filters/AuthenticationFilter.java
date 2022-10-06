@@ -1,11 +1,14 @@
 package com.elearn.controller.filters;
 
+import javax.naming.Context;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.ContentHandler;
+import java.util.logging.Logger;
 
 @WebFilter( "/")
 public class AuthenticationFilter implements Filter {
@@ -23,6 +26,6 @@ public class AuthenticationFilter implements Filter {
             return;
         }
         
-        resp.sendRedirect("index");
+        filterChain.doFilter(servletRequest,servletResponse);
     }
 }
