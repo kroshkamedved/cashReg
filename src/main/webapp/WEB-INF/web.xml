@@ -15,7 +15,7 @@
 
     <filter-mapping>
         <filter-name>authenticationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/sdas/*</url-pattern>
     </filter-mapping>
 
     <servlet-mapping>

@@ -2,6 +2,8 @@ package com.elearn.db;
 
 import com.elearn.db.entity.User;
 import com.elearn.db.entity.UserRole;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -15,6 +17,7 @@ import java.sql.SQLException;
 public class DBManager {
 
     private static DBManager instance;
+    private static Logger logger = LogManager.getLogger(DBManager.class);
 
     public static DBManager getInstance() {
         if (instance == null) {
@@ -30,7 +33,7 @@ public class DBManager {
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
             ds = (DataSource) envContext.lookup("jdbc/mariadb");
-            System.out.println("ds ==> " + ds);
+            logger.info("dataSource ==> " + ds);
         } catch (NamingException ex) {
             throw new IllegalStateException("Cannot obtain a data source");
         }

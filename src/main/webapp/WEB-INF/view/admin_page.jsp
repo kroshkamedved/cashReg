@@ -8,9 +8,9 @@
 <body>
 <%@include file="../../includes/admin_navbar.jsp" %>
 <h1 align="center">
-    Hello, ${usr.login}
+    Hello, ${usr.role} ${usr.login}
     <br>
-    <% out.print(DBManager.getInstance().getConnection());%>
+
 </h1>
 
 <%@include file="../../includes/footer.jsp" %>

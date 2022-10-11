@@ -7,24 +7,33 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.filter.AbstractFilterable;
+
 
 @WebServlet("/controller")
 public class Controller  extends HttpServlet {
+    private static final Logger logger = LogManager.getLogger(Controller.class);
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String address = "error.jsp";
         String commandName = req.getParameter("command");
-        System.out.println("commandName ==> " + commandName); //trace
+        logger.trace("commandNameFromLogger ==> " + commandName);
 
         Command command = CommandContainer.getCommand(commandName);
         try {
              address = command.execute(req,resp);
         } catch (Exception ex){
-            //Log4j
+            logger.error(ex.getMessage());
             req.setAttribute("ex",ex);
         }
-        System.out.println("address ==> " + address);
+        logger.trace("address ==> " + address);
         req.getRequestDispatcher(address).forward(req,resp);
     }
 
@@ -32,16 +41,22 @@ public class Controller  extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String address = "error.jsp";
         String commandName = req.getParameter("command");
-        System.out.println("commandName ==> " + commandName); //trace
+        logger.trace("doPostCOntrollerCommand ==> " + commandName);
 
         Command command = CommandContainer.getCommand(commandName);
         try {
             address = command.execute(req,resp);
         } catch (Exception ex){
-            //Log4j
+            logger.error(ex.getMessage());
             req.getSession().setAttribute("ex",ex);
         }
-        System.out.println("address ==> " + address);
+        logger.trace("address ==> " + address);
         resp.sendRedirect(address);
+    }
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+
     }
 }
