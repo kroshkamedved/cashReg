@@ -23,6 +23,6 @@ public class LogOutController extends HttpServlet {
 
         req.getSession().invalidate();
         logger.info("session invalidated for user :" + usr.getLogin() + " " + usr.getRole());
-        req.getRequestDispatcher("index.jsp").forward(req,resp);
+        resp.sendRedirect("index.jsp");
     }
 }

@@ -22,12 +22,14 @@ public class RoleFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
+        String uri = request.getRequestURI();
         HttpSession session = request.getSession();
         UserRole role = (UserRole) session.getAttribute("role");
-        if (role != null) {
+
+        if (role != null && "/fp/".equals(uri)) {
             switch (role) {
                 case SENIOR_CASHIER:
-                    response.sendRedirect("admin_page.jsp");
+                    response.sendRedirect("cabinet/admin_page.jsp");
                     logger.trace("filtered: admin session");
                     break;
                 case COMMODITY_EXPERT:
@@ -39,7 +41,9 @@ public class RoleFilter implements Filter {
                     logger.trace("filtered: cashier expert session");
                     break;
             }
+
         }
         filterChain.doFilter(request, response);
     }
 }
+

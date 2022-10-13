@@ -11,7 +11,7 @@
 
     <servlet-mapping>
         <servlet-name>admin_jsp</servlet-name>
-        <url-pattern>/admin_page.jsp</url-pattern>
+        <url-pattern>/cabinet/admin_page.jsp</url-pattern>
     </servlet-mapping>
 
 

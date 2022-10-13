@@ -32,13 +32,13 @@ public class LoginCommand implements Command {
 
         switch (currentRole) {
             case SENIOR_CASHIER:
-                result = "admin_page.jsp";
+                result = "cabinet/admin_page.jsp";
                 break;
             case COMMODITY_EXPERT:
-                result = "commodity_expert_page";
+                result = "cabinet/commodity_expert_page";
                 break;
             case CASHIER:
-                result = "cashier_page";
+                result = "cabinet/cashier_page";
                 break;
         }
         return result;

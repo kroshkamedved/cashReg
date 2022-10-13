@@ -1,7 +1,7 @@
 <conteiner>
   <nav class="navbar navbar-expand-lg bg-light">
     <div class="container">
-      <a class="navbar-brand" href="admin_page.jsp">Senior cashier cabinet</a>
+      <a class="navbar-brand" href="commodity_navbar.jsp.jsp">Warehouse</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
               data-bs-target="#navbarSupportedContent"
               aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,24 +13,11 @@
             <!--a class="nav-link active" aria-current="page" href="index.jsp">Home</a!-->
           </li>
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="checks.jsp">Checks</a>
+            <a class="nav-link" aria-current="page" href="add_goods.jsp">Checks</a>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-               aria-expanded="false">
-              Reports
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="z_report.jsp">"Z" Reports</a></li>
-              <li><a class="dropdown-item" href="x_report.jsp">"X" Reports</a></li>
-              <!--li>
-                  <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li!-->
-            </ul>
-          </li>
+
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/fp/logout">Log out</a>
+            <a class="nav-link active" aria-current="page" href="logout">Log out</a>
           </li>
           <!--li class="nav-item">
               <a class="nav-link disabled">Disabled</a>
