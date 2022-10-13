@@ -21,10 +21,9 @@ public class LoginCommand implements Command {
 
         String password = req.getParameter("password");
         User user = UserManager.getInstance().findUser(login, password);
-
-        //if user is logged ==> req.getSession().setAttribute("currentUSer", user);
-        logger.info("user name ==> " + user.getLogin());
         UserRole currentRole = user.getRole();
+
+        logger.info("user logged in : " + user.getLogin() + " user role : " + currentRole);
 
         req.getSession().setAttribute("role", currentRole);
         req.getSession().setAttribute("usr", user);

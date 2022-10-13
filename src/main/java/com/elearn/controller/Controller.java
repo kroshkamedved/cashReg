@@ -41,7 +41,7 @@ public class Controller  extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String address = "error.jsp";
         String commandName = req.getParameter("command");
-        logger.trace("doPostCOntrollerCommand ==> " + commandName);
+        logger.trace("doPostControllerCommand ==> " + commandName);
 
         Command command = CommandContainer.getCommand(commandName);
         try {

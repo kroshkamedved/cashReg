@@ -8,15 +8,6 @@
         <servlet-name>admin_jsp</servlet-name>
         <jsp-file>/WEB-INF/view/admin_page.jsp</jsp-file>
     </servlet>
-    <filter>
-        <filter-name>authenticationFilter</filter-name>
-        <filter-class>com.elearn.controller.filters.AuthenticationFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>authenticationFilter</filter-name>
-        <url-pattern>/sdas/*</url-pattern>
-    </filter-mapping>
 
     <servlet-mapping>
         <servlet-name>admin_jsp</servlet-name>
