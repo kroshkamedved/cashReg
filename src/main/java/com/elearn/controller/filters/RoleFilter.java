@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter("/index.jsp")
+@WebFilter("/")
 public class RoleFilter implements Filter {
 
     private static final Logger logger = LogManager.getLogger(RoleFilter.class);
@@ -29,21 +29,23 @@ public class RoleFilter implements Filter {
         if (role != null && "/fp/".equals(uri)) {
             switch (role) {
                 case SENIOR_CASHIER:
-                    response.sendRedirect("cabinet/admin_page.jsp");
+                    response.sendRedirect("cabinet/admin_page");
                     logger.trace("filtered: admin session");
                     break;
                 case COMMODITY_EXPERT:
-                    response.sendRedirect("commodity_expert_page.jsp");
+                    response.sendRedirect("cabinet/commodity_expert_page");
                     logger.trace("filtered: commodity expert session");
                     break;
                 case CASHIER:
-                    response.sendRedirect("cashier_page.jsp");
+                    response.sendRedirect("cabinet/cashier_page");
                     logger.trace("filtered: cashier expert session");
                     break;
             }
-
         }
-        filterChain.doFilter(request, response);
+        if ("/fp/".equals(uri)) {
+            filterChain.doFilter(request, response);
+        }
+        response.sendRedirect("/fp/");
     }
 }
 

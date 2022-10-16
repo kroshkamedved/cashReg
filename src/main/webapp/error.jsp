@@ -1,13 +1,13 @@
 <html>
 <body>
 
-   ${sessionScope.ex.message}
+   ${sessionScope.ex}
    	<hr>
 
    	${ex}
    	<hr>
 
-   	${ex.getMessage()}
+   	${ex}
 
 </body>
 </html>

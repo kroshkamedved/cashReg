@@ -11,6 +11,7 @@ public class CommandContainer {
         commands = new HashMap<>();
 
         commands.put("login", new LoginCommand());
+        commands.put("addProduct", new AddProductCommand());
 
         //....
     }
