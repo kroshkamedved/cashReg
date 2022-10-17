@@ -17,12 +17,13 @@ public class LogOutController extends HttpServlet {
 
 
     private static final Logger logger = LogManager.getLogger(LogOutController.class);
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User usr = (User) req.getSession().getAttribute("usr");
 
         req.getSession().invalidate();
         logger.info("session invalidated for user :" + usr.getLogin() + " " + usr.getRole());
-        resp.sendRedirect("index.jsp");
+        req.getRequestDispatcher("index.jsp").forward(req, resp);
     }
 }

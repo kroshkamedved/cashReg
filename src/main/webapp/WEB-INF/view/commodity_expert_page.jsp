@@ -1,4 +1,4 @@
-<%@ page import="com.elearn.db.DBManager" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <html>
 <head>
@@ -21,21 +21,20 @@
 
             <form action="/fp/controller" method="post">
                 <input name="command" value="addProduct" type="hidden">
-                <fieldset style="display: table-column;width: 100%">
+                <fieldset style="display: table-column; width: 100%">
                     <legend>Fulfill the form to add the product</legend>
                     <p>
                         <label for="select">Product units</label>
-                        <select id="select">
-                            <option value="">Choose...</option>
-                            <option value="${category.id}">${category.name}</option>
+                        <select name="unit_id" id="select">
+                            <c:forEach items="${units}" var="unit">
+                                <option value="${unit.id}">${unit.name}</option>
+                            </c:forEach>
                         </select>
                     </p>
-
                     <p>
                         <label>Product name</label>
                         <input type="text" name="prod_name" placeholder="*product name*">
                     </p>
-
                     <p>
                         <label>Product description</label>
                         <textarea name="description" rows="2" style="height: 50px;"></textarea>
@@ -44,7 +43,10 @@
                         <label>Product quantity</label>
                         <input type="number" name="prod_quantity" placeholder="*product quantity*">
                     </p>
-
+                    <p>
+                        <label>Product price per unit</label>
+                        <input type="number" name="product_price" placeholder="*product price*">
+                    </p>
                     <p>
                         <button type="submit">Add product</button>
                     </p>

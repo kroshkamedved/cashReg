@@ -23,5 +23,15 @@
         <url-pattern>/cabinet/commodity_expert_page</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>addedItemPage</servlet-name>
+        <jsp-file>/WEB-INF/view/added_item_page.jsp</jsp-file>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>addedItemPage</servlet-name>
+        <url-pattern>/cabinet/commodity_expert_page/addedItemPage</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>
