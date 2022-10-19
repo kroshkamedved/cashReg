@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-
 @WebFilter("/")
 public class RoleFilter implements Filter {
 
@@ -29,6 +28,7 @@ public class RoleFilter implements Filter {
         if (role != null && "/fp/".equals(uri)) {
             switch (role) {
                 case SENIOR_CASHIER:
+
                     response.sendRedirect("cabinet/admin_page");
                     logger.trace("filtered: admin session");
                     break;
