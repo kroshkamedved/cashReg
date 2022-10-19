@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-@WebFilter("/")
+
+@WebFilter("/index.jsp")
 public class RoleFilter implements Filter {
 
     private static final Logger logger = LogManager.getLogger(RoleFilter.class);
@@ -42,10 +43,8 @@ public class RoleFilter implements Filter {
                     break;
             }
         }
-        if ("/fp/".equals(uri)) {
-            filterChain.doFilter(request, response);
-        }
-        response.sendRedirect("/fp/");
+
+        filterChain.doFilter(request, response);
     }
 }
 
