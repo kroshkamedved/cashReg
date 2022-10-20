@@ -13,15 +13,7 @@
         <servlet-name>admin_jsp</servlet-name>
         <url-pattern>/cabinet/admin_page</url-pattern>
     </servlet-mapping>
-    <servlet>
-        <servlet-name>commodity_jsp</servlet-name>
-        <jsp-file>/WEB-INF/view/commodity_expert_page.jsp</jsp-file>
-    </servlet>
 
-    <servlet-mapping>
-        <servlet-name>commodity_jsp</servlet-name>
-        <url-pattern>/cabinet/commodity_expert_page</url-pattern>
-    </servlet-mapping>
 
     <servlet>
         <servlet-name>addedItemPage</servlet-name>

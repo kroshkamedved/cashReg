@@ -15,6 +15,7 @@ public class ProductManager {
 
     String INSERT_STATEMENT_SQL = "insert into goods(name,description,price, units_id) VALUES (?, ?, ?,?)";
     String INSERT_TO_WAREHOUSE_SQL = "insert into warehouse(product_id,quantity) VALUES (?, ?)";
+    String UPDATE_ITEM_STOCK_SQL = "UPDATE warehouse SET QUANTITY = ? where product_id = ? ";
     private Logger logger = LogManager.getLogger(ProductManager.class);
 
     public static synchronized ProductManager getInstance() {
@@ -98,5 +99,38 @@ public class ProductManager {
             } catch (Exception e) {
             }
         }
+    }
+
+    public void updateProduct(HttpServletRequest req) throws DBException {
+        Connection connection = null;
+        PreparedStatement updateItemStock = null;
+        ResultSet resultSet = null;
+        try {
+            connection = dbManager.getConnection();
+
+            updateItemStock = dbManager.getConnection().prepareStatement(UPDATE_ITEM_STOCK_SQL);
+            updateItemStock.setInt(1, Integer.parseInt(req.getParameter("newStock")));
+            updateItemStock.setInt(2, Integer.parseInt(req.getParameter("productId")));
+            updateItemStock.executeUpdate();
+
+
+        } catch (SQLException e) {
+            logger.error("cannot update product stock");
+            throw new DBException("cannot update product stock", e);
+        } finally {
+            try {
+                updateItemStock.close();
+            } catch (Exception e) {
+            }
+            try {
+                resultSet.close();
+            } catch (Exception e) {
+            }
+            try {
+                connection.close();
+            } catch (Exception e) {
+            }
+        }
+        logger.trace("product successfully updated");
     }
 }

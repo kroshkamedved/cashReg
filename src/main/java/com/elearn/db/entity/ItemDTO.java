@@ -40,6 +40,9 @@ public class ItemDTO extends AbstractEntity {
         this.productPrice = productPrice;
     }
 
+    public ItemDTO() {
+    }
+
     public String getProductName() {
         return productName;
     }
