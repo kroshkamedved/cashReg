@@ -43,7 +43,6 @@ public class RoleFilter implements Filter {
                     break;
             }
         }
-
         filterChain.doFilter(request, response);
     }
 }
