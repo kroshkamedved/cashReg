@@ -16,6 +16,8 @@ public class ProductManager {
     String INSERT_STATEMENT_SQL = "insert into goods(name,description,price, units_id) VALUES (?, ?, ?,?)";
     String INSERT_TO_WAREHOUSE_SQL = "insert into warehouse(product_id,quantity) VALUES (?, ?)";
     String UPDATE_ITEM_STOCK_SQL = "UPDATE warehouse SET QUANTITY = ? where product_id = ? ";
+    String DELETE_ITEM_FROM_STOCK = "DELETE FROM goods WHERE ID = ? ";
+
     private Logger logger = LogManager.getLogger(ProductManager.class);
 
     public static synchronized ProductManager getInstance() {
@@ -132,5 +134,38 @@ public class ProductManager {
             }
         }
         logger.trace("product successfully updated");
+    }
+
+    public void deleteProduct(HttpServletRequest req) throws DBException {
+        Connection connection = null;
+        PreparedStatement deleteItem = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = dbManager.getConnection();
+
+            deleteItem = dbManager.getConnection().prepareStatement(DELETE_ITEM_FROM_STOCK);
+            deleteItem.setInt(1, Integer.parseInt(req.getParameter("deleteItemId")));
+            deleteItem.executeUpdate();
+
+
+        } catch (SQLException e) {
+            logger.error("cannot delete product from stock");
+            throw new DBException("cannot delete product from stock", e);
+        } finally {
+            try {
+                deleteItem.close();
+            } catch (Exception e) {
+            }
+            try {
+                resultSet.close();
+            } catch (Exception e) {
+            }
+            try {
+                connection.close();
+            } catch (Exception e) {
+            }
+        }
+        logger.trace("product successfully deleted");
     }
 }

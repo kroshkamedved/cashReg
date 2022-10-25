@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 
 <html>
@@ -6,7 +7,10 @@
     <title>Commodity expert page</title>
     <%@include file="../../includes/head.jsp" %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <jsp:useBean id="loc" scope="session" type="java.lang.String"/>
+    <fmt:setLocale value="${loc}"/>
+    <fmt:setBundle basename="language"/>
+    <jsp:useBean id="edit" scope="request" type="java.lang.Boolean"/>
 </head>
 <body>
 <%@include file="../../includes/commodity_navbar.jsp" %>
@@ -69,50 +73,90 @@
     <div class="col">
         <div class="collapse multi-collapse" id="collapseAllgoods">
             <div class="card w-80 mx-auto my-8">
-                <div class="card-header text-center">stock</div>
+                <div class="card-header text-center"><fmt:message key="goods.warehouse.info.header"/></div>
                 <div class="card-body" align="center">
+                    <table border="1" cellpadding="5" cellspacing="5">
+                        <tr>
+                            <th>Item ID</th>
+                            <th>Item name</th>
+                            <th>Description</th>
+                            <th>Units id</th>
+                            <th>Price per unit</th>
+                            <th>Remaining quantity</th>
+                            <th>Change remaining quantity</th>
+                            <th>delete item</th>
+                        </tr>
 
-                   <%-- <form action="/fp/controller" method="get">
-                        <input name="command" value="changeStock" type="hidden">--%>
-                        <table border="1" cellpadding="5" cellspacing="5">
+                        <c:forEach var="itemDTO" items="${itemDTOList}">
                             <tr>
-                                <th>Item ID</th>
-                                <th>Item name</th>
-                                <th>Description</th>
-                                <th>Units id</th>
-                                <th>Price per unit</th>
-                                <th>Remaining quantity</th>
-                                <th>Change remaining quantity</th>
-                                <th>Submit</th>
-                            </tr>
-
-                            <c:forEach var="itemDTO" items="${itemDTOList}">
-                                <tr>
-                                    <td>${itemDTO.productID}</td>
-                                    <td>${itemDTO.productName}</td>
-                                    <td>${itemDTO.productDescription}</td>
-                                    <td>${itemDTO.productUnitId}</td>
-                                    <td>${itemDTO.productPrice}</td>
-                                    <td>${itemDTO.productQuantity}</td>
+                                <td>${itemDTO.productID}</td>
+                                <td>${itemDTO.productName}</td>
+                                <td>${itemDTO.productDescription}</td>
+                                <td>${itemDTO.productUnitId}</td>
+                                <td>${itemDTO.productPrice}</td>
+                                <td>${itemDTO.productQuantity}</td>
+                                <c:if test="${edit}">
                                     <td>
                                         <form action="/fp/controller" method="post">
                                             <input type="hidden" name="command" value="changeStock">
                                             <input type="hidden" name="productId" value=${itemDTO.productID}>
-                                            <input type="text" name="newStock"
-                                                   placeholder=${itemDTO.productQuantity} min="0"
-                                                   max="${itemDTO.productQuantity}*10">
+                                            <input type="number" name="newStock"
+                                                   placeholder=${itemDTO.productQuantity}
+                                                           min="1" max="9999">
                                             <button type="submit" class="btn btn-success" type="submit">SUBMIT</button>
                                         </form>
                                     </td>
-                                        <%--<td><input type="text" name="newStock"
-                                                   value=${itemDTO.productQuantity}></td>
-                                        <td>
-                                            <button type="submit" class="btn btn-success">Submit</button>
-                                        </td>--%>
-                                </tr>
-                            </c:forEach>
-                        </table>
+                                    <td>
+                                        <form action="/fp/controller" method="post">
+                                            <input type="hidden" name="command" value="deleteItem">
+                                            <button class="delete_btn" name="deleteItemId" value="${itemDTO.productID}"
+                                                    type="submit">X
+                                            </button>
+                                        </form>
+                                    </td>
+                                </c:if>
+                            </tr>
+                        </c:forEach>
+                    </table>
                     </form>
+                    <section>
+                        <div class="counter">${currentPage}</div>
+                        <div class="buttons">
+                            <form action="/fp/controller" method="get">
+                                <input type="hidden" name="cmd" value="ChangePage">
+                                <c:if test="${currentPage != 1}">
+                                    <td><a href="/fp/cabinet/commodity_expert_page?page=${currentPage - 1}">Previous</a></td>
+                                </c:if>
+                                <table border="1" cellpadding="5" cellspacing="5">
+                                    <tr>
+                                        <c:forEach begin="1" end="${noOfPages}" var="i">
+                                            <c:choose>
+                                                <c:when test="${currentPage eq i}">
+                                                    <td>${i}</td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td><a href="/fp/cabinet/commodity_expert_page?page=${i}">${i}</a></td>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                <c:if test="${currentPage lt noOfPages}">
+                                    <td><a href="/fp/cabinet/commodity_expert_page?page=${currentPage + 1}">Next</a></td>
+                                </c:if>
+                            </form>
+                        </div>
+                        <div class="edit_btns">
+                            <form>
+                                <button class="edit_btn" name="edit" value="true"><fmt:message
+                                        key="goods.edit.btn"/></button>
+                                <c:if test="${edit}">
+                                    <button class="cancel_btn" name="edit" value="false"><fmt:message
+                                            key="goods.edit.exit.btn"/></button>
+                                </c:if>
+                            </form>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>

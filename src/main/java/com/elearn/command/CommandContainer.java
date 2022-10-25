@@ -13,6 +13,8 @@ public class CommandContainer {
         commands.put("login", new LoginCommand());
         commands.put("addProduct", new AddProductCommand());
         commands.put("changeStock", new ChangeStockCommand());
+        commands.put("deleteItem", new DeleteItemCommand());
+        commands.put("changeLanguage", new ChangeLanguageCommand());
 
         //....
     }

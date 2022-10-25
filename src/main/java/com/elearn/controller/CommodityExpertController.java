@@ -24,21 +24,36 @@ public class CommodityExpertController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String page = "/WEB-INF/view/commodity_expert_page.jsp";
+
+        int page = 1;
+        int recordsPerPage = 2;
+        if (req.getParameter("page") != null)
+            page = Integer.parseInt(
+                    req.getParameter("page"));
+
+
+        String url = "/WEB-INF/view/commodity_expert_page.jsp";
         UnitDao dao = new UnitDao();
         GoodsManager goodsManager = GoodsManager.getInstance();
+
+        if (req.getParameter("edit") != null) {
+            req.setAttribute("edit", Boolean.valueOf(req.getParameter("edit")));
+        } else {
+            req.setAttribute("edit", false);
+        }
+
         try {
             req.setAttribute("units", dao.list());
-            req.setAttribute("itemDTOList", goodsManager.getAllGoods());
+            req.setAttribute("itemDTOList", goodsManager.getGoods(req,page, recordsPerPage));
         } catch (SQLException e) {
             req.setAttribute("ex", "cannot load commodityPage, problem with units list ");
             logger.error("can't load units ");
-            page = "/error.jsp";
+            url = "/error.jsp";
         } catch (DBException e) {
             req.setAttribute("ex", "cannot load product list from DB");
             logger.error("can't load goods list");
-            page = "/error.jsp";
+            url = "/error.jsp";
         }
-        req.getServletContext().getRequestDispatcher(page).forward(req, resp);
+        req.getServletContext().getRequestDispatcher(url).forward(req, resp);
     }
 }
