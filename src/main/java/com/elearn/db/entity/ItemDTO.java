@@ -9,7 +9,7 @@ public class ItemDTO extends AbstractEntity {
     private String productDescription;
     private int productQuantity;
     private int productUnitId;
-    private int productPrice;
+    private double productPrice;
 
     @Override
     public boolean equals(Object o) {
@@ -32,7 +32,7 @@ public class ItemDTO extends AbstractEntity {
         this.productID = productID;
     }
 
-    public ItemDTO(String productName, String productDescription, int productQuantity, int productUnitId, int productPrice) {
+    public ItemDTO(String productName, String productDescription, int productQuantity, int productUnitId, double productPrice) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.productQuantity = productQuantity;
@@ -75,7 +75,7 @@ public class ItemDTO extends AbstractEntity {
         this.productUnitId = productUnitId;
     }
 
-    public int getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 

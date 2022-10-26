@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductManager {
 
@@ -17,6 +19,10 @@ public class ProductManager {
     String INSERT_TO_WAREHOUSE_SQL = "insert into warehouse(product_id,quantity) VALUES (?, ?)";
     String UPDATE_ITEM_STOCK_SQL = "UPDATE warehouse SET QUANTITY = ? where product_id = ? ";
     String DELETE_ITEM_FROM_STOCK = "DELETE FROM goods WHERE ID = ? ";
+
+    String SELECT_ALL_GOODS = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id";
+    String COUNT_ALL_GOODS = "SELECT COUNT(*) as quantity FROM goods";
+    String SELECT_GOODS_WITH_LIMIT = "SELECT * FROM goods gd join warehouse wh on gd.id = wh.product_id ORDER BY name ASC LIMIT ? offset ?";
 
     private Logger logger = LogManager.getLogger(ProductManager.class);
 
@@ -38,7 +44,7 @@ public class ProductManager {
         String productDescription = req.getParameter("description");
         int productQuantity = Integer.parseInt(req.getParameter("prod_quantity"));
         int productUnitId = Integer.parseInt(req.getParameter("unit_id"));
-        int productPrice = Integer.parseInt(req.getParameter("product_price"));
+        double productPrice = Double.parseDouble(req.getParameter("product_price"));
         return new ItemDTO(productName, productDescription, productQuantity, productUnitId, productPrice);
     }
 
@@ -55,7 +61,7 @@ public class ProductManager {
             insertProductStmnt = dbManager.getConnection().prepareStatement(INSERT_STATEMENT_SQL, Statement.RETURN_GENERATED_KEYS);
             insertProductStmnt.setString(1, product.getProductName());
             insertProductStmnt.setString(2, product.getProductDescription());
-            insertProductStmnt.setInt(3, product.getProductPrice());
+            insertProductStmnt.setDouble(3, product.getProductPrice());
             insertProductStmnt.setInt(4, product.getProductUnitId());
             insertProductStmnt.executeUpdate();
 
@@ -167,5 +173,124 @@ public class ProductManager {
             }
         }
         logger.trace("product successfully deleted");
+    }
+
+    public List<ItemDTO> getAllGoods() throws DBException {
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet rs = null;
+        List<ItemDTO> itemDTOList = new ArrayList<>();
+        try {
+            connection = dbManager.getConnection();
+            statement = connection.createStatement();
+            rs = statement.executeQuery(SELECT_ALL_GOODS);
+
+            while (rs.next()) {
+                itemDTOList.add(extractItem(rs));
+            }
+        } catch (SQLException e) {
+            logger.error("cannot get goods from DB");
+            throw new DBException("cannot get goods list", e);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return itemDTOList;
+    }
+
+    private ItemDTO extractItem(ResultSet rs) throws SQLException {
+        ItemDTO itemDTO = new ItemDTO();
+        itemDTO.setProductID(rs.getInt("id"));
+        itemDTO.setProductName(rs.getString("name"));
+        itemDTO.setProductDescription(rs.getString("description"));
+        itemDTO.setProductPrice(rs.getInt("price"));
+        itemDTO.setProductUnitId(rs.getInt("units_id"));
+        itemDTO.setProductQuantity(rs.getInt("quantity"));
+
+        return itemDTO;
+    }
+
+    public List<ItemDTO> getGoods(HttpServletRequest req, int page, int recordsPerPage) throws DBException {
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet rs = null;
+        PreparedStatement ps = null;
+        List<ItemDTO> itemDTOList = new ArrayList<>();
+        try {
+            connection = dbManager.getConnection();
+            Statement st = connection.createStatement();
+            ResultSet rs1 = st.executeQuery(COUNT_ALL_GOODS);
+            rs1.next();
+            int goodsQuantity = rs1.getInt("quantity");
+
+            int noOfPages = (int) Math.ceil(goodsQuantity * 1.0
+                    / recordsPerPage);
+
+            ps = connection.prepareStatement(SELECT_GOODS_WITH_LIMIT);
+            ps.setInt(1, recordsPerPage);
+            ps.setInt(2, (page - 1) * recordsPerPage);
+
+            rs = ps.executeQuery();
+
+            req.setAttribute("noOfPages", noOfPages);
+            req.setAttribute("currentPage", page);
+
+            while (rs.next()) {
+                itemDTOList.add(extractItem(rs));
+            }
+        } catch (SQLException e) {
+            logger.error("cannot get goods from DB");
+            throw new DBException("cannot get goods list", e);
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return itemDTOList;
     }
 }

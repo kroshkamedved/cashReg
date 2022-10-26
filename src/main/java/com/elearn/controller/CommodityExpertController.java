@@ -4,7 +4,7 @@ import com.elearn.controller.filters.DropDownListFilter;
 import com.elearn.db.DBException;
 import com.elearn.db.dao.UnitDao;
 import com.elearn.db.entity.ItemDTO;
-import com.elearn.logic.GoodsManager;
+import com.elearn.logic.ProductManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,26 +25,27 @@ public class CommodityExpertController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        int page = 1;
         int recordsPerPage = 2;
-        if (req.getParameter("page") != null)
-            page = Integer.parseInt(
-                    req.getParameter("page"));
-
+        if (req.getParameter("page") != null) {
+            int page = Integer.parseInt(req.getParameter("page"));
+            req.getSession().setAttribute("page", page);
+        }
+        int page = (req.getSession().getAttribute("page") != null)
+                ? (int) req.getSession().getAttribute("page")
+                : 1;
 
         String url = "/WEB-INF/view/commodity_expert_page.jsp";
         UnitDao dao = new UnitDao();
-        GoodsManager goodsManager = GoodsManager.getInstance();
+        ProductManager goodsManager = ProductManager.getInstance();
 
         if (req.getParameter("edit") != null) {
             req.setAttribute("edit", Boolean.valueOf(req.getParameter("edit")));
         } else {
             req.setAttribute("edit", false);
         }
-
         try {
             req.setAttribute("units", dao.list());
-            req.setAttribute("itemDTOList", goodsManager.getGoods(req,page, recordsPerPage));
+            req.setAttribute("itemDTOList", goodsManager.getGoods(req, page, recordsPerPage));
         } catch (SQLException e) {
             req.setAttribute("ex", "cannot load commodityPage, problem with units list ");
             logger.error("can't load units ");
@@ -56,4 +57,5 @@ public class CommodityExpertController extends HttpServlet {
         }
         req.getServletContext().getRequestDispatcher(url).forward(req, resp);
     }
+
 }

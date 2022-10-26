@@ -18,7 +18,6 @@
                             <ul class="dropdown-menu">
                                 <form action="/fp/controller" method="post">
                                     <input type="hidden" name="command" value="changeLanguage">
-
                                     <li>
                                         <button class="ui-button" type="submit" name="loc" value="eng">eng</button>
                                     </li>
