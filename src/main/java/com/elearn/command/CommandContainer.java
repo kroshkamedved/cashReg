@@ -15,6 +15,7 @@ public class CommandContainer {
         commands.put("changeStock", new ChangeStockCommand());
         commands.put("deleteItem", new DeleteItemCommand());
         commands.put("changeLanguage", new ChangeLanguageCommand());
+        commands.put("addProductToCart", new AddProductToCartCommand());
 
         //....
     }

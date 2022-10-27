@@ -3,6 +3,7 @@ package com.elearn.logic;
 import com.elearn.db.DBException;
 import com.elearn.db.entity.ItemDTO;
 import com.elearn.db.utils.DBManager;
+import com.elearn.db.utils.JdbcUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,6 +22,8 @@ public class ProductManager {
     String DELETE_ITEM_FROM_STOCK = "DELETE FROM goods WHERE ID = ? ";
 
     String SELECT_ALL_GOODS = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id";
+
+    String SELECT_ITEM_DTO = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id where gd.id = ? or gd.name = ?";
     String COUNT_ALL_GOODS = "SELECT COUNT(*) as quantity FROM goods";
     String SELECT_GOODS_WITH_LIMIT = "SELECT * FROM goods gd join warehouse wh on gd.id = wh.product_id ORDER BY name ASC LIMIT ? offset ?";
 
@@ -90,29 +93,13 @@ public class ProductManager {
                 logger.fatal("Database was thrown SQLException during closing connection: {} {}", e.getErrorCode(), e.getMessage());
             }
         } finally {
-            try {
-                insertProductStmnt.close();
-            } catch (Exception e) {
-            }
-            try {
-                insertToWarehouseStmnt.close();
-            } catch (Exception e) {
-            }
-            try {
-                resultSet.close();
-            } catch (Exception e) {
-            }
-            try {
-                connection.close();
-            } catch (Exception e) {
-            }
+            JdbcUtils.closeClosable(resultSet, insertProductStmnt, insertToWarehouseStmnt, connection);
         }
     }
 
     public void updateProduct(HttpServletRequest req) throws DBException {
         Connection connection = null;
         PreparedStatement updateItemStock = null;
-        ResultSet resultSet = null;
         try {
             connection = dbManager.getConnection();
 
@@ -126,18 +113,7 @@ public class ProductManager {
             logger.error("cannot update product stock");
             throw new DBException("cannot update product stock", e);
         } finally {
-            try {
-                updateItemStock.close();
-            } catch (Exception e) {
-            }
-            try {
-                resultSet.close();
-            } catch (Exception e) {
-            }
-            try {
-                connection.close();
-            } catch (Exception e) {
-            }
+            JdbcUtils.closeClosable(connection);
         }
         logger.trace("product successfully updated");
     }
@@ -145,7 +121,6 @@ public class ProductManager {
     public void deleteProduct(HttpServletRequest req) throws DBException {
         Connection connection = null;
         PreparedStatement deleteItem = null;
-        ResultSet resultSet = null;
 
         try {
             connection = dbManager.getConnection();
@@ -159,18 +134,7 @@ public class ProductManager {
             logger.error("cannot delete product from stock");
             throw new DBException("cannot delete product from stock", e);
         } finally {
-            try {
-                deleteItem.close();
-            } catch (Exception e) {
-            }
-            try {
-                resultSet.close();
-            } catch (Exception e) {
-            }
-            try {
-                connection.close();
-            } catch (Exception e) {
-            }
+            JdbcUtils.closeClosable(deleteItem, connection);
         }
         logger.trace("product successfully deleted");
     }
@@ -192,27 +156,7 @@ public class ProductManager {
             logger.error("cannot get goods from DB");
             throw new DBException("cannot get goods list", e);
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            JdbcUtils.closeClosable(rs, statement, connection);
         }
         return itemDTOList;
     }
@@ -231,13 +175,13 @@ public class ProductManager {
 
     public List<ItemDTO> getGoods(HttpServletRequest req, int page, int recordsPerPage) throws DBException {
         Connection connection = null;
-        Statement statement = null;
+        Statement st = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
         List<ItemDTO> itemDTOList = new ArrayList<>();
         try {
             connection = dbManager.getConnection();
-            Statement st = connection.createStatement();
+            st = connection.createStatement();
             ResultSet rs1 = st.executeQuery(COUNT_ALL_GOODS);
             rs1.next();
             int goodsQuantity = rs1.getInt("quantity");
@@ -261,36 +205,40 @@ public class ProductManager {
             logger.error("cannot get goods from DB");
             throw new DBException("cannot get goods list", e);
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            JdbcUtils.closeClosable(rs, ps, st, connection);
         }
         return itemDTOList;
+    }
+
+    public void addProductToCart(HttpServletRequest req) throws DBException {
+        String identifier = req.getParameter("prod_identifier");
+        List<ItemDTO> cart = (List<ItemDTO>) req.getSession().getAttribute("cart");
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = dbManager.getConnection();
+            ps = connection.prepareStatement(SELECT_ITEM_DTO);
+            try {
+                ps.setInt(1, Integer.parseInt(identifier));
+            } catch (Exception e) {
+                ps.setInt(1, -1);
+                logger.trace("addProductToCart not by ID");
+            }
+            ps.setString(2, identifier);
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                cart.add(extractItem(rs));
+            }
+            logger.trace("product putted in cart");
+
+        } catch (SQLException e) {
+            logger.error("cannot do addProductToCart");
+            throw new DBException("cannot do addProductToCart", e);
+        } finally {
+            JdbcUtils.closeClosable(rs, ps, connection);
+        }
     }
 }

@@ -10,7 +10,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnitDao extends AbstractDao<Unit,Integer>{
+public class UnitDao {
 
     public List<Unit> list() throws SQLException {
         List<Unit> listCategory = new ArrayList<>();
@@ -34,35 +34,5 @@ public class UnitDao extends AbstractDao<Unit,Integer>{
         }
 
         return listCategory;
-    }
-
-    @Override
-    public boolean insertEntity(Unit entity) throws SQLException {
-        return false;
-    }
-
-    @Override
-    public boolean deleteEntity(Unit entity) throws SQLException {
-        return false;
-    }
-
-    @Override
-    public boolean updateEntity(Unit entity) throws SQLException {
-        return false;
-    }
-
-    @Override
-    public String getSelectQuery() {
-        return null;
-    }
-
-    @Override
-    protected String getIdSelectQuery() {
-        return null;
-    }
-
-    @Override
-    protected List<Unit> parseList(ResultSet resultSet) {
-        return null;
     }
 }

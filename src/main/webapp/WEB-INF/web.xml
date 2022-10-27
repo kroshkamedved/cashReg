@@ -14,7 +14,6 @@
         <url-pattern>/cabinet/admin_page</url-pattern>
     </servlet-mapping>
 
-
     <servlet>
         <servlet-name>addedItemPage</servlet-name>
         <jsp-file>/WEB-INF/view/added_item_page.jsp</jsp-file>

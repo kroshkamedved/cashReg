@@ -1,8 +1,6 @@
 package com.elearn.controller.filters;
 
-import com.elearn.db.dao.AbstractDao;
 import com.elearn.db.dao.UnitDao;
-import com.elearn.db.entity.Unit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

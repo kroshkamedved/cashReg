@@ -1,30 +1,10 @@
 package com.elearn.db.utils;
 
 import java.sql.*;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class JdbcUtils {
-
-    private static ResourceBundle resources = ResourceBundle.getBundle("database");
-    private static boolean initialized;
-
-    public static Connection getConnection() throws SQLException {
-        if (!initialized) try {
-            initializeDriver();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        String url = resources.getString("db.url");
-        String login = resources.getString("db.user");
-        String pass = resources.getString("db.password");
-        Connection connection = DriverManager.getConnection(url, login, pass);
-        return connection;
-    }
-
-    private static synchronized void initializeDriver() throws ClassNotFoundException {
-        Class.forName(resources.getString("db.driver"));
-        initialized = true;
-    }
 
     public static void closeConnection(Connection connection) {
         if (connection != null) {
@@ -66,5 +46,16 @@ public class JdbcUtils {
         }
     }
 
-
+    public static void closeClosable(AutoCloseable... autoCloseables) {
+        for (AutoCloseable item :
+                autoCloseables) {
+            if (item != null) {
+                try {
+                    item.close();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
 }

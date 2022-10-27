@@ -35,7 +35,7 @@
                         <fieldset style="display: table-column; width: 100%">
                             <legend>Fulfill the form to add the product</legend>
                             <p>
-                                <label for="select">Product units</label>
+                                <label for="select"><fmt:message key="common.info.cabinet.units"/></label>
                                 <select name="unit_id" id="select">
                                     <c:forEach items="${units}" var="unit">
                                         <option value="${unit.id}">${unit.name}</option>
@@ -43,7 +43,7 @@
                                 </select>
                             </p>
                             <p>
-                                <label>Product name</label>
+                                <label><label><fmt:message key="common.info.cabinet.productName"/></label></label>
                                 <input type="text" name="prod_name" placeholder="*product name*">
                             </p>
                             <p>
@@ -61,7 +61,7 @@
                                        placeholder="*product price*">
                             </p>
                             <p>
-                                <button type="submit">Add product</button>
+                                <button type="submit"><fmt:message key="commodity.actions.createProduct"/></button>
                             </p>
 
                         </fieldset>

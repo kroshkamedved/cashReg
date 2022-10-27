@@ -1,10 +1,20 @@
-function handleClick(clickedId) {
+function empty() {
+    var x;
+    x = document.getElementById("prod_identifier").value;
+    if (x == "") {
+        alert("Enter a Valid Id or Name");
+        return false;
+    }
+    ;
+}
+
+/*function handleClick(clickedId) {
     if (clickedId == "eng")
         document.getElementById('locId').value = "eng";
     else
         document.getElementById('locId').value = "ua";
     $("form").submit();
-}
+}*/
 
 /*   <script type="text/javascript" src="${pageContext.request.contextPath}/js/index.js"></script>
    <li>
