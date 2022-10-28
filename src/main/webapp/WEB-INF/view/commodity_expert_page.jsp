@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="my" uri="myTaglib" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 
 <html>
@@ -79,11 +80,11 @@
                     <th>Item ID</th>
                     <th>Item name</th>
                     <th>Description</th>
-                    <th>Units id</th>
+                    <th>Units</th>
                     <th>Price per unit</th>
                     <th>Remaining quantity</th>
-                    <th>Change remaining quantity</th>
-                    <th>delete item</th>
+                    <th><c:if test="${edit}">Change remaining quantity</c:if></th>
+                    <th><c:if test="${edit}">delete item</c:if></th>
                 </tr>
 
                 <c:forEach var="itemDTO" items="${itemDTOList}">
@@ -91,7 +92,7 @@
                         <td>${itemDTO.productID}</td>
                         <td>${itemDTO.productName}</td>
                         <td>${itemDTO.productDescription}</td>
-                        <td>${itemDTO.productUnitId}</td>
+                        <td><my:unitTag unit="${itemDTO.productUnitId}"/></td>
                         <td>${itemDTO.productPrice}</td>
                         <td>${itemDTO.productQuantity}</td>
                         <c:if test="${edit}">
@@ -147,8 +148,8 @@
                     </form>
                 </div>
                 <div class="edit_btns">
-                    <form>
-                        <button  name="edit" value="true" dat><fmt:message
+                    <form action="cabinet" method="post">
+                        <button name="edit" value="true" dat><fmt:message
                                 key="goods.edit.btn"/></button>
                         <c:if test="${edit}">
                             <button name="edit" value="false"><fmt:message

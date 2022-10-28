@@ -2,7 +2,7 @@ package com.elearn.db.entity;
 
 import java.util.Objects;
 
-public class ItemDTO extends AbstractEntity {
+public class ItemDTO {
 
     private long productID;
     private String productName;
@@ -10,6 +10,8 @@ public class ItemDTO extends AbstractEntity {
     private int productQuantity;
     private int productUnitId;
     private double productPrice;
+
+    private String productUnit;
 
     @Override
     public boolean equals(Object o) {
@@ -81,5 +83,13 @@ public class ItemDTO extends AbstractEntity {
 
     public void setProductPrice(int productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public String getProductUnit() {
+        return productUnit;
+    }
+
+    public void setProductUnit(String productUnit) {
+        this.productUnit = productUnit;
     }
 }

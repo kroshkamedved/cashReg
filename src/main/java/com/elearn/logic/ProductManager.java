@@ -2,6 +2,7 @@ package com.elearn.logic;
 
 import com.elearn.db.DBException;
 import com.elearn.db.entity.ItemDTO;
+import com.elearn.db.entity.Unit;
 import com.elearn.db.utils.DBManager;
 import com.elearn.db.utils.JdbcUtils;
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ProductManager {
@@ -212,7 +214,8 @@ public class ProductManager {
 
     public void addProductToCart(HttpServletRequest req) throws DBException {
         String identifier = req.getParameter("prod_identifier");
-        List<ItemDTO> cart = (List<ItemDTO>) req.getSession().getAttribute("cart");
+        //List<ItemDTO> cart = (List<ItemDTO>) req.getSession().getAttribute("cart");
+        HashMap<ItemDTO, Integer> cart = (HashMap<ItemDTO, Integer>) req.getSession().getAttribute("cart");
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -230,7 +233,8 @@ public class ProductManager {
 
             rs = ps.executeQuery();
             while (rs.next()) {
-                cart.add(extractItem(rs));
+                //cart.add(extractItem(rs));
+                cart.put(extractItem(rs),1);
             }
             logger.trace("product putted in cart");
 
@@ -240,5 +244,29 @@ public class ProductManager {
         } finally {
             JdbcUtils.closeClosable(rs, ps, connection);
         }
+    }
+
+    public List<Unit> getUnitList() throws SQLException {
+        List<Unit> listCategory = new ArrayList<>();
+
+        try (Connection connection = DBManager.getInstance().getConnection()) {
+            String sql = "SELECT * FROM units ORDER BY id";
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("unit");
+                Unit unit = new Unit(id, name);
+
+                listCategory.add(unit);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+
+        return listCategory;
     }
 }

@@ -35,7 +35,7 @@ public class CommodityExpertController extends HttpServlet {
                 : 1;
 
         String url = "/WEB-INF/view/commodity_expert_page.jsp";
-        UnitDao dao = new UnitDao();
+
         ProductManager goodsManager = ProductManager.getInstance();
 
         if (req.getParameter("edit") != null) {
@@ -44,12 +44,8 @@ public class CommodityExpertController extends HttpServlet {
             req.setAttribute("edit", false);
         }
         try {
-            req.setAttribute("units", dao.list());
             req.setAttribute("itemDTOList", goodsManager.getGoods(req, page, recordsPerPage));
-        } catch (SQLException e) {
-            req.setAttribute("ex", "cannot load commodityPage, problem with units list ");
-            logger.error("can't load units ");
-            url = "/error.jsp";
+
         } catch (DBException e) {
             req.setAttribute("ex", "cannot load product list from DB");
             logger.error("can't load goods list");
