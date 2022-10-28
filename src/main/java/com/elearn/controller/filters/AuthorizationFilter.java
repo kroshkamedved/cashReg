@@ -43,7 +43,7 @@ public class AuthorizationFilter implements Filter {
             Optional<String> key = pages.keySet().stream()
                     .filter(s -> uri.contains(s))
                     .findFirst();
-            String usrKey = key.get();
+            String usrKey = key.orElse(null);
 
             if (usrKey != null && usr.getRole() == pages.get(usrKey)) {
                 filterChain.doFilter(request, response);

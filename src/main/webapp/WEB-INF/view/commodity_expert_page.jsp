@@ -148,7 +148,7 @@
                     </form>
                 </div>
                 <div class="edit_btns">
-                    <form action="cabinet" method="post">
+                    <form>
                         <button name="edit" value="true" dat><fmt:message
                                 key="goods.edit.btn"/></button>
                         <c:if test="${edit}">
