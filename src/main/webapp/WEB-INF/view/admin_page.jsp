@@ -5,19 +5,19 @@
 <html>
 <head>
     <title>Admin page</title>
-    <%@include file="../../includes/head.jsp" %>
+    <%@include file="includes/head.jsp" %>
     <jsp:useBean id="loc" scope="session" type="java.lang.String"/>
     <fmt:setLocale value="${loc}"/>
     <fmt:setBundle basename="language"/>
 </head>
 <body>
-<%@include file="../../includes/admin_navbar.jsp" %>
+<%@include file="includes/admin_navbar.jsp" %>
 <h1 align="center">
     Hello, ${usr.role} ${usr.login}
     <br>
 
 </h1>
 
-<%@include file="../../includes/footer.jsp" %>
+<%@include file="includes/footer.jsp" %>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Login page</title>
-    <%@include file="includes/head.jsp" %>
+    <%@include file="WEB-INF/view/includes/head.jsp" %>
 </head>
 <body>
 <div class="container">
@@ -27,7 +27,7 @@
                 </div>
 
 
-                <%@include file="includes/footer.jsp" %>
+                <%@include file="WEB-INF/view/includes/footer.jsp" %>
 
 </body>
 

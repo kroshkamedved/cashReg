@@ -16,6 +16,8 @@ public class MyServletContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext sc = sce.getServletContext();
+        String path = sc.getContextPath();
+        sc.setAttribute("app", path);
         sc.setAttribute("contextLogger", contextLogger);
         try {
             sc.setAttribute("units", ProductManager.getInstance().getUnitList());

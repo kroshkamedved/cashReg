@@ -1,22 +1,32 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: gavri
-  Date: 10/17/2022
-  Time: 11:54 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>Product successfully added</title>
-    <br>
-    ${product.productName}
-    <br>
-    ${product.productDescription}
-    <br>
-    ${product.productQuantity}
+    <%@include file="includes/head.jsp" %>
+    <jsp:useBean id="loc" scope="session" type="java.lang.String"/>
+    <fmt:setLocale value="${loc}"/>
+    <fmt:setBundle basename="language"/>
 </head>
 <body>
+<%@include file="includes/commodity_navbar.jsp" %>
+<title>Product successfully added</title>
+<br>
+<figure class="text-center">
+    <blockquote class="blockquote">
+        <p>Product "${product.productName}" successfully added to warehouse</p>
+    </blockquote>
+    <figcaption class="blockquote-footer">
+        <fmt:message key="common.info.cabinet.productName"/> - ${product.productName}
+        <br>
+        <fmt:message key="common.info.cabinet.productDescription"/> - ${product.productDescription}
+        <br>
+        <fmt:message key="common.info.cabinet.quantity"/> - ${product.productQuantity}
+    </figcaption>
+</figure>
+<%@include file="includes/footer.jsp" %>
+
 
 </body>
+
 </html>

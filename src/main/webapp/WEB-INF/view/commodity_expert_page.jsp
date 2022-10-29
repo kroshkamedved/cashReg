@@ -6,15 +6,15 @@
 <html>
 <head>
     <title>Commodity expert page</title>
-    <%@include file="../../includes/head.jsp" %>
+    <%@include file="includes/head.jsp" %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <jsp:useBean id="loc" scope="session" type="java.lang.String"/>
+    <%--    <jsp:useBean id="loc" scope="session" type="java.lang.String"/>--%>
     <fmt:setLocale value="${loc}"/>
     <fmt:setBundle basename="language"/>
-    <jsp:useBean id="edit" scope="request" type="java.lang.Boolean"/>
+    <%--    <jsp:useBean id="edit" scope="request" type="java.lang.Boolean"/>--%>
 </head>
 <body>
-<%@include file="../../includes/commodity_navbar.jsp" %>
+<%@include file="includes/commodity_navbar.jsp" %>
 <div class="container">
 
     <h1 align="center">
@@ -160,6 +160,6 @@
             </section>
         </div>
     </div>
-    <%@include file="../../includes/footer.jsp" %>
+    <%@include file="includes/footer.jsp" %>
 </body>
 </html>

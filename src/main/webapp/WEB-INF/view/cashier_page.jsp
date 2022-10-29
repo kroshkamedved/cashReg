@@ -7,7 +7,7 @@
 <head>
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/index.js"></script>
     <title>Commodity expert page</title>
-    <%@include file="../../includes/head.jsp" %>
+    <%@include file="includes/head.jsp" %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <jsp:useBean id="loc" scope="session" type="java.lang.String" class="java.lang.String"/>
     <fmt:setLocale value="${loc}"/>
@@ -15,7 +15,7 @@
 
 </head>
 <body>
-<%@include file="../../includes/cashier_navbar.jsp" %>
+<%@include file="includes/cashier_navbar.jsp" %>
 <div class="container">
 
     <h1 align="center">
@@ -123,6 +123,6 @@
         </div>
     </div>
     </c:if>
-    <%@include file="../../includes/footer.jsp" %>
+    <%@include file="includes/footer.jsp" %>
 </body>
 </html>
