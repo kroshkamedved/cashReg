@@ -15,7 +15,7 @@ public class ChangeStockCommand implements Command {
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws AppException {
         ProductManager pm = ProductManager.getInstance();
-        pm.updateProduct(req);
+        pm.updateProductAfterPurchase(req);
         return "cabinet/commodity_expert_page";
     }
 }

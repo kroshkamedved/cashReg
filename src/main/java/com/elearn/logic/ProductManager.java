@@ -18,16 +18,15 @@ public class ProductManager {
 
     private static ProductManager instance;
 
-    String INSERT_STATEMENT_SQL = "insert into goods(name,description,price, units_id) VALUES (?, ?, ?,?)";
-    String INSERT_TO_WAREHOUSE_SQL = "insert into warehouse(product_id,quantity) VALUES (?, ?)";
-    String UPDATE_ITEM_STOCK_SQL = "UPDATE warehouse SET QUANTITY = ? where product_id = ? ";
-    String DELETE_ITEM_FROM_STOCK = "DELETE FROM goods WHERE ID = ? ";
-
-    String SELECT_ALL_GOODS = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id";
-
-    String SELECT_ITEM_DTO = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id where gd.id = ? or gd.name = ?";
-    String COUNT_ALL_GOODS = "SELECT COUNT(*) as quantity FROM goods";
-    String SELECT_GOODS_WITH_LIMIT = "SELECT * FROM goods gd join warehouse wh on gd.id = wh.product_id ORDER BY name ASC LIMIT ? offset ?";
+    private final String INSERT_STATEMENT_SQL = "insert into goods(name,description,price, units_id) VALUES (?, ?, ?,?)";
+    private final String INSERT_TO_WAREHOUSE_SQL = "insert into warehouse(product_id,quantity) VALUES (?, ?)";
+    private final String UPDATE_ITEM_STOCK_SQL = "UPDATE warehouse SET QUANTITY = ? where product_id = ? ";
+    private final String UPDATE_ITEM_STOCK_AFTER_PURCHASE = "UPDATE warehouse SET QUANTITY = (QUANTITY - ?) where product_id = ? ";
+    private final String DELETE_ITEM_FROM_STOCK = "DELETE FROM goods WHERE ID = ? ";
+    private final String SELECT_ALL_GOODS = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id";
+    private final String SELECT_ITEM_DTO = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id where gd.id = ? or gd.name = ?";
+    private final String COUNT_ALL_GOODS = "SELECT COUNT(*) as quantity FROM goods";
+    private final String SELECT_GOODS_WITH_LIMIT = "SELECT * FROM goods gd join warehouse wh on gd.id = wh.product_id ORDER BY name ASC LIMIT ? offset ?";
 
     private Logger logger = LogManager.getLogger(ProductManager.class);
 
@@ -87,8 +86,7 @@ public class ProductManager {
 
         } catch (SQLException x) {
             try {
-                if (connection != null)
-                    connection.rollback();
+                if (connection != null) connection.rollback();
                 logger.error("Database was thrown SQLException with message: {} {}", x.getErrorCode(), x.getMessage());
                 throw new DBException("cannot add product", x);
             } catch (SQLException e) {
@@ -99,7 +97,7 @@ public class ProductManager {
         }
     }
 
-    public void updateProduct(HttpServletRequest req) throws DBException {
+    public void updateProductAfterPurchase(HttpServletRequest req) throws DBException {
         Connection connection = null;
         PreparedStatement updateItemStock = null;
         try {
@@ -116,6 +114,26 @@ public class ProductManager {
             throw new DBException("cannot update product stock", e);
         } finally {
             JdbcUtils.closeClosable(connection);
+        }
+        logger.trace("product successfully updated");
+    }
+
+    public void updateProductAfterPurchase(Connection connection, long id, int newStock) throws DBException {
+        PreparedStatement updateItemStock = null;
+        try {
+            connection = dbManager.getConnection();
+
+            updateItemStock = dbManager.getConnection().prepareStatement(UPDATE_ITEM_STOCK_AFTER_PURCHASE);
+            updateItemStock.setInt(1, newStock);
+            updateItemStock.setLong(2, id);
+            updateItemStock.executeUpdate();
+
+
+        } catch (SQLException e) {
+            logger.error("cannot update product stock");
+            throw new DBException("cannot update product stock", e);
+        } finally {
+            JdbcUtils.closeClosable(updateItemStock);
         }
         logger.trace("product successfully updated");
     }
@@ -188,8 +206,7 @@ public class ProductManager {
             rs1.next();
             int goodsQuantity = rs1.getInt("quantity");
 
-            int noOfPages = (int) Math.ceil(goodsQuantity * 1.0
-                    / recordsPerPage);
+            int noOfPages = (int) Math.ceil(goodsQuantity * 1.0 / recordsPerPage);
 
             ps = connection.prepareStatement(SELECT_GOODS_WITH_LIMIT);
             ps.setInt(1, recordsPerPage);
@@ -234,10 +251,9 @@ public class ProductManager {
             rs = ps.executeQuery();
             while (rs.next()) {
                 //cart.add(extractItem(rs));
-                cart.put(extractItem(rs),1);
+                cart.put(extractItem(rs), 1);
             }
             logger.trace("product putted in cart");
-
         } catch (SQLException e) {
             logger.error("cannot do addProductToCart");
             throw new DBException("cannot do addProductToCart", e);
@@ -261,12 +277,10 @@ public class ProductManager {
 
                 listCategory.add(unit);
             }
-
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw ex;
         }
-
         return listCategory;
     }
 }

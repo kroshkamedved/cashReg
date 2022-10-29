@@ -3,7 +3,6 @@ package com.elearn.logic;
 import com.elearn.db.DBException;
 import com.elearn.db.entity.ItemDTO;
 import com.elearn.db.entity.User;
-import com.elearn.db.entity.UserRole;
 import com.elearn.db.utils.DBManager;
 import com.elearn.db.utils.JdbcUtils;
 import org.apache.logging.log4j.LogManager;
@@ -11,13 +10,13 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CheckManager {
+    public static final String INSERT_INTO_ORDER_ITEMS = "insert into order_items (order_id,product_id, product_name,quantity) values (?,?,?,?)";
+    private final String INSERT_INTO_ORDERS = "Insert into orders (date,created_by) VALUES (?,?)";
     private static CheckManager instance;
 
     private Logger logger = LogManager.getLogger(CheckManager.class);
@@ -44,8 +43,7 @@ public class CheckManager {
         try {
             connection = dbManager.getConnection();
             // connection.setAutoCommit(false);
-
-            createNewOrder = connection.prepareStatement("Insert into orders (date,created_by) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+            createNewOrder = connection.prepareStatement(INSERT_INTO_ORDERS, Statement.RETURN_GENERATED_KEYS);
             Date date = new Date();
             Object param = new java.sql.Timestamp(date.getTime());
             createNewOrder.setObject(1, param);
@@ -57,7 +55,7 @@ public class CheckManager {
                     orderId = keys.getLong(1);
                 }
             }
-            insertToOrderItems = connection.prepareStatement("insert into order_items (order_id,product_id, product_name,quantity) values (?,?,?,?)");
+            insertToOrderItems = connection.prepareStatement(INSERT_INTO_ORDER_ITEMS);
 
             for (Map.Entry<ItemDTO, Integer> entry :
                     goods.entrySet()) {
@@ -66,6 +64,10 @@ public class CheckManager {
                 insertToOrderItems.setString(3, entry.getKey().getProductName());
                 insertToOrderItems.setInt(4, entry.getValue());
                 insertToOrderItems.executeUpdate();
+                ProductManager productManager = ProductManager.getInstance();
+                synchronized (productManager) {
+                    productManager.updateProductAfterPurchase(connection, entry.getKey().getProductID(), entry.getValue());
+                }
             }
             connection.commit();
             request.getSession().setAttribute("orderId", orderId);
