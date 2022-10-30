@@ -1,6 +1,6 @@
 package com.elearn.controller.filters;
 
-import com.elearn.db.dao.UnitDao;
+import com.elearn.exception.DBException;
 import com.elearn.logic.ProductManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,10 +17,9 @@ public class DropDownListFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        UnitDao dao = new UnitDao();
         try {
             servletRequest.setAttribute("units", ProductManager.getInstance().getUnitList());
-        } catch (SQLException e) {
+        } catch (DBException e) {
             servletRequest.setAttribute("ex", "cannot load units list from DB");
             logger.error("can't load units list");
             servletRequest.getServletContext().getRequestDispatcher("error.jsp").forward(servletRequest, servletResponse);

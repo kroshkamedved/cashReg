@@ -1,6 +1,7 @@
 package com.elearn.logic;
 
-import com.elearn.db.DBException;
+import com.elearn.db.utils.JdbcUtils;
+import com.elearn.exception.DBException;
 import com.elearn.db.entity.UserRole;
 import com.elearn.db.utils.DBManager;
 import com.elearn.db.entity.User;
@@ -59,12 +60,7 @@ public class UserManager {
                 return extractUser(rs);
             }
         } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (prpst != null) {
-                prpst.close();
-            }
+            JdbcUtils.closeClosable(prpst, rs);
         }
         return null;
     }

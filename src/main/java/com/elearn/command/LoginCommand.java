@@ -1,6 +1,6 @@
 package com.elearn.command;
 
-import com.elearn.db.DBException;
+import com.elearn.exception.DBException;
 import com.elearn.db.entity.User;
 import com.elearn.db.entity.UserRole;
 import com.elearn.logic.UserManager;

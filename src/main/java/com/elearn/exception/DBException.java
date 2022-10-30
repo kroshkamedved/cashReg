@@ -1,4 +1,4 @@
-package com.elearn.db;
+package com.elearn.exception;
 
 import com.elearn.exception.AppException;
 

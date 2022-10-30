@@ -1,6 +1,6 @@
 package com.elearn.logic;
 
-import com.elearn.db.DBException;
+import com.elearn.exception.DBException;
 import com.elearn.db.entity.ItemDTO;
 import com.elearn.db.entity.Unit;
 import com.elearn.db.utils.DBManager;
@@ -86,7 +86,9 @@ public class ProductManager {
 
         } catch (SQLException x) {
             try {
-                if (connection != null) connection.rollback();
+                if (connection != null) {
+                    connection.rollback();
+                }
                 logger.error("Database was thrown SQLException with message: {} {}", x.getErrorCode(), x.getMessage());
                 throw new DBException("cannot add product", x);
             } catch (SQLException e) {
@@ -113,7 +115,7 @@ public class ProductManager {
             logger.error("cannot update product stock");
             throw new DBException("cannot update product stock", e);
         } finally {
-            JdbcUtils.closeClosable(connection);
+            JdbcUtils.closeClosable(updateItemStock, connection);
         }
         logger.trace("product successfully updated");
     }
@@ -123,17 +125,16 @@ public class ProductManager {
         try {
             connection = dbManager.getConnection();
 
-            updateItemStock = dbManager.getConnection().prepareStatement(UPDATE_ITEM_STOCK_AFTER_PURCHASE);
+            updateItemStock = connection.prepareStatement(UPDATE_ITEM_STOCK_AFTER_PURCHASE);
             updateItemStock.setInt(1, newStock);
             updateItemStock.setLong(2, id);
             updateItemStock.executeUpdate();
-
 
         } catch (SQLException e) {
             logger.error("cannot update product stock");
             throw new DBException("cannot update product stock", e);
         } finally {
-            JdbcUtils.closeClosable(updateItemStock);
+            JdbcUtils.closeClosable(updateItemStock, connection);
         }
         logger.trace("product successfully updated");
     }
@@ -170,7 +171,7 @@ public class ProductManager {
             rs = statement.executeQuery(SELECT_ALL_GOODS);
 
             while (rs.next()) {
-                itemDTOList.add(extractItem(rs));
+                itemDTOList.add(extractItemFromGoodsTable(rs));
             }
         } catch (SQLException e) {
             logger.error("cannot get goods from DB");
@@ -178,13 +179,26 @@ public class ProductManager {
         } finally {
             JdbcUtils.closeClosable(rs, statement, connection);
         }
+        logger.trace("All goods returned");
         return itemDTOList;
     }
 
-    private ItemDTO extractItem(ResultSet rs) throws SQLException {
+    protected ItemDTO extractItemFromGoodsTable(ResultSet rs) throws SQLException {
         ItemDTO itemDTO = new ItemDTO();
         itemDTO.setProductID(rs.getInt("id"));
         itemDTO.setProductName(rs.getString("name"));
+        itemDTO.setProductDescription(rs.getString("description"));
+        itemDTO.setProductPrice(rs.getInt("price"));
+        itemDTO.setProductUnitId(rs.getInt("units_id"));
+        itemDTO.setProductQuantity(rs.getInt("quantity"));
+
+        return itemDTO;
+    }
+
+    protected ItemDTO extractItemFromOrdersItems(ResultSet rs) throws SQLException {
+        ItemDTO itemDTO = new ItemDTO();
+        itemDTO.setProductID(rs.getInt("product_id"));
+        itemDTO.setProductName(rs.getString("product_name"));
         itemDTO.setProductDescription(rs.getString("description"));
         itemDTO.setProductPrice(rs.getInt("price"));
         itemDTO.setProductUnitId(rs.getInt("units_id"));
@@ -218,7 +232,7 @@ public class ProductManager {
             req.setAttribute("currentPage", page);
 
             while (rs.next()) {
-                itemDTOList.add(extractItem(rs));
+                itemDTOList.add(extractItemFromGoodsTable(rs));
             }
         } catch (SQLException e) {
             logger.error("cannot get goods from DB");
@@ -226,6 +240,7 @@ public class ProductManager {
         } finally {
             JdbcUtils.closeClosable(rs, ps, st, connection);
         }
+        logger.trace("paginated goods shown");
         return itemDTOList;
     }
 
@@ -251,7 +266,7 @@ public class ProductManager {
             rs = ps.executeQuery();
             while (rs.next()) {
                 //cart.add(extractItem(rs));
-                cart.put(extractItem(rs), 1);
+                cart.put(extractItemFromGoodsTable(rs), 1);
             }
             logger.trace("product putted in cart");
         } catch (SQLException e) {
@@ -260,27 +275,84 @@ public class ProductManager {
         } finally {
             JdbcUtils.closeClosable(rs, ps, connection);
         }
+        logger.trace("order successfully added from order");
     }
 
-    public List<Unit> getUnitList() throws SQLException {
+    public List<Unit> getUnitList() throws DBException {
         List<Unit> listCategory = new ArrayList<>();
+        Statement statement = null;
+        ResultSet result = null;
+        Connection connection = null;
 
-        try (Connection connection = DBManager.getInstance().getConnection()) {
+        try {
+            connection = DBManager.getInstance().getConnection();
             String sql = "SELECT * FROM units ORDER BY id";
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(sql);
+            statement = connection.createStatement();
+            result = statement.executeQuery(sql);
 
             while (result.next()) {
                 int id = result.getInt("id");
                 String name = result.getString("unit");
                 Unit unit = new Unit(id, name);
-
                 listCategory.add(unit);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            throw ex;
+            throw new DBException("cannot get measure units list", ex);
+        } finally {
+            JdbcUtils.closeClosable(result, statement, connection);
         }
         return listCategory;
+    }
+
+    public void deleteItemFromOrder(HttpServletRequest req) throws DBException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        PreparedStatement psIncreaseStock = null;
+        try {
+            connection = DBManager.getInstance().getConnection();
+            connection.setAutoCommit(false);
+
+            ps = connection.prepareStatement("delete from order_items where order_id = ? and product_id = ?");
+            ps.setInt(1, Integer.parseInt(req.getParameter("orderId")));
+            ps.setInt(2, Integer.parseInt(req.getParameter("deleteItemId")));
+            ps.executeUpdate();
+
+
+            psIncreaseStock = connection.prepareStatement("UPDATE warehouse SET quantity = (quantity + ?) WHERE product_id  = ?");
+            psIncreaseStock.setInt(1, Integer.parseInt(req.getParameter("productQuantity")));
+            psIncreaseStock.setInt(2, Integer.parseInt(req.getParameter("deleteItemId")));
+            psIncreaseStock.executeUpdate();
+
+            connection.commit();
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new DBException("error during connection rollback", ex);
+            }
+            logger.error("cannot delete Item From Order");
+            throw new DBException("cannot delete Item From Order", e);
+        } finally {
+            JdbcUtils.closeClosable(psIncreaseStock, ps, connection);
+        }
+        logger.trace("product successfully deleted from order");
+    }
+
+    public void deleteWholeOrder(HttpServletRequest req) throws DBException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        try {
+            connection = DBManager.getInstance().getConnection();
+            ps = connection.prepareStatement("DELETE FROM orders where id = ?");
+            ps.setLong(1, Integer.parseInt(req.getParameter("deleteOrderId")));
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("cannot do deleteWholeOrder");
+            throw new DBException("error during connection rollback", e);
+        } finally {
+            JdbcUtils.closeClosable(ps, connection);
+        }
+        logger.trace("order successfully deleted from order");
     }
 }

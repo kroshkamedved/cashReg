@@ -1,6 +1,6 @@
 package com.elearn.controller;
 
-import com.elearn.db.DBException;
+import com.elearn.exception.DBException;
 import com.elearn.db.entity.ItemDTO;
 import com.elearn.logic.CheckManager;
 import org.apache.logging.log4j.LogManager;
@@ -12,9 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 @WebServlet("/cabinet/cashier_page")
@@ -44,12 +42,12 @@ public class CashierController extends HttpServlet {
             list.remove(first.get());
             logger.trace("item with id = " + id + "deleted from list");
         }
-
         String url = "/WEB-INF/view/cashier_page.jsp";
         req.getServletContext().getRequestDispatcher(url).forward(req, resp);
         logger.trace("cashier controller DO GET executed");
     }
 
+    //TODO take away doPost from servlet. Relocate logic to the commands interface
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 

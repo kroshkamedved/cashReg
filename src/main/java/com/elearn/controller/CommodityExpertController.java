@@ -1,9 +1,6 @@
 package com.elearn.controller;
 
-import com.elearn.controller.filters.DropDownListFilter;
-import com.elearn.db.DBException;
-import com.elearn.db.dao.UnitDao;
-import com.elearn.db.entity.ItemDTO;
+import com.elearn.exception.DBException;
 import com.elearn.logic.ProductManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,8 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
 
 @WebServlet("/cabinet/commodity_expert_page")
 public class CommodityExpertController extends HttpServlet {

@@ -22,36 +22,20 @@
         Hello, ${usr.role} ${usr.login}
         <br>
     </h1>
-    <p>
-        <a class="btn btn-primary" data-bs-toggle="collapse" href="#CollapseAdding" role="button"
-           aria-expanded="false" aria-controls="CollapseAdding"><fmt:message
-                key="cashier.actions.addItem"/></a>
-    </p>
-    <div class="col">
-        <div class="collapse multi-collapse" id="CollapseAdding">
-            <div class="card w-50 mx-auto my-5">
-                <div class="card-header text-center">add new product</div>
-                <div class="card-body">
-
-                    <form action="/fp/controller" method="post">
-                        <input name="command" value="addProductToCart" type="hidden">
-                        <fieldset style="display: table-column; width: 100%">
-                            <legend>Fulfill the form to add the product</legend>
-                            <p>
-                                <label><fmt:message key="common.info.cabinet.productName"/></label>
-                                <input type="text" name="prod_identifier" id="prod_identifier"
-                                       placeholder="*product name or id*">
-                            </p>
-                            <p>
-                                <input type="submit" value="Add product" onclick="return empty()"/>
-                            </p>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <form action="/fp/controller" method="post">
+        <input name="command" value="addProductToCart" type="hidden">
+        <fieldset style="display: table-column; width: 100%">
+            <legend>Fulfill the form to add the product</legend>
+            <p>
+                <label><fmt:message key="common.info.cabinet.productName"/></label>
+                <input type="text" name="prod_identifier" id="prod_identifier"
+                       placeholder="*product name or id*">
+            </p>
+            <p>
+                <input type="submit" value="Add product" onclick="return empty()"/>
+            </p>
+        </fieldset>
+    </form>
     <div class="card w-80 mx-auto my-8">
         <c:if test="${fn:length(cart) > 0}">
         <div class="card-header text-center"><fmt:message key="cashier.cart.info.header"/></div>
@@ -84,7 +68,8 @@
                                     <c:otherwise>
                                         <form action="/fp/cabinet/cashier_page" method="post">
                                             <select name="unit_quantity" id="select">
-                                                <c:forEach begin="${cart.get(itemDTO)}" end="${itemDTO.productQuantity}" var="k">
+                                                <c:forEach begin="${cart.get(itemDTO)}" end="${itemDTO.productQuantity}"
+                                                           var="k">
                                                     <option value="${k}">${k}</option>
                                                 </c:forEach>
                                             </select>
@@ -114,7 +99,8 @@
                             </form>
                             "<fmt:message
                                 key="cashier.cart.action.clean"/>"</button>
-                            <button type="submit" name="checkClosed" value="true"><fmt:message key="cashier.actions.confirmOrder"/></button>
+                            <button type="submit" name="checkClosed" value="true"><fmt:message
+                                    key="cashier.actions.confirmOrder"/></button>
                         </c:if>
                     </div>
                 </section>

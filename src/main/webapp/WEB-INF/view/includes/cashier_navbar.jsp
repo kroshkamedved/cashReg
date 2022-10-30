@@ -1,7 +1,7 @@
 <conteiner>
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container">
-            <a class="navbar-brand" href="${app}/cabinet/cashier_page">Warehouse</a>
+            <a class="navbar-brand" href="${app}/cabinet/cashier_page">Cashier cabinet</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,10 +18,10 @@
                             <ul class="dropdown-menu">
                                 <form action="/fp/controller" method="post">
                                     <input type="hidden" name="command" value="changeLanguage">
-                                    <li>
+                                    <li class="nav-item">
                                         <button class="ui-button" type="submit" name="loc" value="eng">eng</button>
                                     </li>
-                                    <li>
+                                    <li class="nav-item">
                                         <button class="ui-button" type="submit" name="loc" value="ua">ua</button>
                                     </li>
                                 </form>
@@ -32,7 +32,7 @@
                         <!--a class="nav-link active" aria-current="page" href="index.jsp">Home</a!-->
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="show_checks">Checks</a>
+                        <a class="nav-link" aria-current="page" href="${app}/cabinet/cashier_page/checks">Checks</a>
                     </li>
 
                     <li class="nav-item">
@@ -43,11 +43,13 @@
                         <a class="nav-link disabled">Disabled</a>
                     </li!-->
                 </ul>
+                <%--
 
-                <!--form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form!-->
+                                <form class="d-flex" role="search">
+                                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-outline-success" type="submit">Search</button>
+                                </form>
+                --%>
 
             </div>
         </div>

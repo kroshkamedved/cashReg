@@ -1,8 +1,6 @@
 package com.elearn.command;
 
-import com.elearn.db.DBException;
-import com.elearn.db.entity.ItemDTO;
-import com.elearn.exception.AppException;
+import com.elearn.exception.DBException;
 import com.elearn.logic.ProductManager;
 
 import javax.servlet.http.HttpServletRequest;

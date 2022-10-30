@@ -10,7 +10,6 @@ public class ItemDTO {
     private int productQuantity;
     private int productUnitId;
     private double productPrice;
-
     private String productUnit;
 
     @Override
