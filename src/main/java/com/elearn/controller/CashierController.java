@@ -63,6 +63,7 @@ public class CashierController extends HttpServlet {
         if (req.getParameter("checkClosed") != null) {
             try {
                 CheckManager.getInstance().confirmCheck(req, list);
+                list.clear();
                 resp.sendRedirect("/fp/cabinet/cashier_page/check_confirmed");
             } catch (DBException e) {
                 throw new RuntimeException(e);

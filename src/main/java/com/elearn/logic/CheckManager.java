@@ -17,6 +17,9 @@ import java.util.Date;
 
 public class CheckManager {
     private Logger logger = LogManager.getLogger(CheckManager.class);
+
+    private final String SELECT_GOODS_WITH_LIMIT = "select o.id, o.date, o.created_by, oi.product_id, oi.product_name, g.description, oi.quantity, g.price, g.units_id from order_items oi join orders o on o.id = oi.order_id join goods g on oi.product_id = g.id and o.created_by = 11 and cast(o.date as  date) = current_date() order by o.id desc LIMIT ? offset ?";
+
     private static final String INSERT_INTO_ORDER_ITEMS = "insert into order_items (order_id,product_id, product_name,quantity) values (?,?,?,?)";
     private static final String SELECT_CHECKS_FOR_CASHIER = "select * from order_items oi " +
             "                                                       join orders o on o.id = oi.order_id" +
@@ -26,6 +29,9 @@ public class CheckManager {
             "                                                       order by o.id desc";
     private static final String SELECT_CHECKS_FOR_SENIOR_CASHIER = "select o.id, o.date, o.created_by, oi.product_id, oi.product_name, g.description, oi.quantity, g.price, g.units_id from order_items oi join orders o on o.id = oi.order_id join goods g on oi.product_id = g.id and o.created_by = 11 and cast(o.date as  date) = current_date() order by o.id desc";
     private final String INSERT_INTO_ORDERS = "Insert into orders (date,created_by) VALUES (?,?)";
+
+    private final String COUNT_ALL_ORDERS = "SELECT COUNT(*) as quantity  FROM orders o where cast(o.date as DATE) = curdate();";
+
     private static CheckManager instance;
 
     public static synchronized CheckManager getInstance() {
@@ -90,13 +96,21 @@ public class CheckManager {
         }
     }
 
-    public void showChecks(User usr, HttpServletRequest req) throws DBException {
+    public void showChecks(User usr, HttpServletRequest req, int page, int recordsPerPage) throws DBException {
         UserRole currentRole = usr.getRole();
         Connection connection = null;
+        Statement st = null;
         PreparedStatement prepStat = null;
+        ResultSet rsOrderUantity = null;
         ResultSet rs = null;
         try {
             connection = dbManager.getConnection();
+            st = connection.createStatement();
+            rsOrderUantity = st.executeQuery(COUNT_ALL_ORDERS);
+            rsOrderUantity.next();
+            int ordersQuantity = rsOrderUantity.getInt("quantity");
+            int noOfPages = (int) Math.ceil(ordersQuantity * 1.0 / recordsPerPage);
+
             if (currentRole == UserRole.CASHIER) {
                 prepStat = connection.prepareStatement(SELECT_CHECKS_FOR_CASHIER);
                 prepStat.setLong(1, usr.getId());
@@ -105,6 +119,12 @@ public class CheckManager {
                 Date date = new Date();
                 Timestamp timeStamp = new Timestamp(date.getTime());
                 prepStat.setTimestamp(1, timeStamp);
+                //added for pagination
+                prepStat.setInt(2, recordsPerPage);
+                prepStat.setInt(3, (page - 1) * recordsPerPage);
+
+                req.setAttribute("noOfPages", noOfPages);
+                req.setAttribute("currentPage", page);
             }
             rs = prepStat.executeQuery();
             List<Order> orders = extractOrders(rs);
@@ -113,7 +133,7 @@ public class CheckManager {
             logger.error("cannot do showChecks", e);
             throw new DBException("cannot do showChecks", e);
         } finally {
-            JdbcUtils.closeClosable(rs, prepStat, connection);
+            JdbcUtils.closeClosable(rs, rsOrderUantity, st, prepStat, connection);
         }
     }
 

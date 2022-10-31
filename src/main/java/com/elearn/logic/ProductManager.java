@@ -275,7 +275,7 @@ public class ProductManager {
         } finally {
             JdbcUtils.closeClosable(rs, ps, connection);
         }
-        logger.trace("order successfully added from order");
+        logger.trace("product successfully added to cart");
     }
 
     public List<Unit> getUnitList() throws DBException {

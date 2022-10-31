@@ -93,6 +93,43 @@
             </tbody>
         </table>
     </c:forEach>
+    <section>
+        <c:if test="${usr.role eq UserRole.SENIOR_CASHIER}">
+        <div class="counter">
+            <h5>${currentPage}</h5>
+            <div class="buttons">
+                <form action="/fp/controller" method="get">
+                    <c:if test="${currentPage > 1}">
+                        <td>
+                            <a href="/fp/cabinet/admin_page/checks?page=${currentPage-1}">Previous</a>
+                        </td>
+                    </c:if>
+                    <table>
+                        <tr>
+                            <c:forEach var="i" begin="1" end="${noOfPages}">
+                                <c:choose>
+                                    <c:when test="${currentPage eq i}">
+                                        <td>${i}</td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td>
+                                            <a href="/fp/cabinet/admin_page/checks?page=${i}">${i}</a>
+                                        </td>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                        </tr>
+                    </table>
+                    <c:if test="${currentPage lt noOfPages}">
+                        <td>
+                            <a href="/fp/cabinet/admin_page/checks?page=${currentPage + 1}">Next</a>
+                        </td>
+                    </c:if>
+                </form>
+            </div>
+        </div>
+    </section>
+    </c:if>
 </div>
 <%@include file="includes/footer.jsp" %>
 </body>

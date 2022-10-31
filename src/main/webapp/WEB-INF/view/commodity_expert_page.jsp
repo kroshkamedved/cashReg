@@ -124,7 +124,6 @@
                 <div class="counter">${currentPage}</div>
                 <div class="buttons">
                     <form action="/fp/controller" method="get">
-                        <input type="hidden" name="cmd" value="ChangePage">
                         <c:if test="${currentPage != 1}">
                             <td><a href="/fp/cabinet/commodity_expert_page?page=${currentPage - 1}">Previous</a></td>
                         </c:if>
