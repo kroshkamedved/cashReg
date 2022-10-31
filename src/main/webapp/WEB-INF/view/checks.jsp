@@ -6,6 +6,7 @@
 <%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
+    <script type="text/javascript" src="${app}/js/index.js"></script>
     <%@include file="includes/head.jsp" %>
     <fmt:setLocale value="${loc}"/>
     <fmt:setBundle basename="language"/>
@@ -15,6 +16,7 @@
 <c:choose>
     <c:when test="${usr.role eq UserRole.SENIOR_CASHIER}">
         <%@include file="includes/admin_navbar.jsp" %>
+
     </c:when>
     <c:when test="${usr.role eq UserRole.CASHIER}">
         <%@include file="includes/cashier_navbar.jsp" %>
@@ -23,6 +25,7 @@
 
 
 <div class="container">
+    <input type="date" name="search" >
     <c:forEach var="order" items="${orders}">
         <table class="table">
             <thead>

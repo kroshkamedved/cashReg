@@ -8,6 +8,7 @@ function empty() {
     }
 }
 
+
 /*function handleClick(clickedId) {
     if (clickedId == "eng")
         document.getElementById('locId').value = "eng";

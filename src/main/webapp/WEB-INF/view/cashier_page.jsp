@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/index.js"></script>
+    <script type="text/javascript" src="${app}/js/index.js"></script>
     <title>Commodity expert page</title>
     <%@include file="includes/head.jsp" %>
     <meta name="viewport" content="width=device-width, initial-scale=1">

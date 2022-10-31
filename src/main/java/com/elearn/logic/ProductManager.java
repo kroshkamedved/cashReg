@@ -309,12 +309,15 @@ public class ProductManager {
         Connection connection = null;
         PreparedStatement ps = null;
         PreparedStatement psIncreaseStock = null;
+        Statement st = null;
+        ResultSet rs = null;
         try {
             connection = DBManager.getInstance().getConnection();
             connection.setAutoCommit(false);
 
             ps = connection.prepareStatement("delete from order_items where order_id = ? and product_id = ?");
-            ps.setInt(1, Integer.parseInt(req.getParameter("orderId")));
+            int orderId = Integer.parseInt(req.getParameter("orderId"));
+            ps.setInt(1, orderId);
             ps.setInt(2, Integer.parseInt(req.getParameter("deleteItemId")));
             ps.executeUpdate();
 
@@ -324,6 +327,13 @@ public class ProductManager {
             psIncreaseStock.setInt(2, Integer.parseInt(req.getParameter("deleteItemId")));
             psIncreaseStock.executeUpdate();
 
+            st = connection.createStatement();
+            rs = st.executeQuery("select count(*) as oiCount from order_items where order_id ="+ orderId);
+            rs.next();
+            if(rs.getInt(1) == 0)
+            {
+                st.executeQuery("DELETE FROM orders where id =" + orderId);
+            }
             connection.commit();
         } catch (SQLException e) {
             try {
