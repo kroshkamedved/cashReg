@@ -26,6 +26,9 @@ public class ChecksController extends HttpServlet {
         String path = "/WEB-INF/view/checks.jsp";
         try {
 
+           Object obj = req.getParameter("search");
+            logger.trace(obj.toString());
+
             int recordsPerPage = 2;
             if (req.getParameter("page") != null) {
                 int page = Integer.parseInt(req.getParameter("page"));

@@ -25,7 +25,10 @@
 
 
 <div class="container">
+<form action"/fp/controller">
     <input type="date" name="search" >
+    <button name="orderFromDate" value="submit">from</button>
+</form>
     <c:forEach var="order" items="${orders}">
         <table class="table">
             <thead>
