@@ -11,12 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 public class AddProductToCartCommand implements Command {
 
     Logger logger = LogManager.getLogger(AddProductToCartCommand.class);
-
-    @Override
-    public void initContext() {
-
-    }
-
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws DBException {
         ProductManager pm = ProductManager.getInstance();

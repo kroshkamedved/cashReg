@@ -9,11 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DeleteItemFromOrderCommand implements Command {
     @Override
-    public void initContext() {
-
-    }
-
-    @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws AppException {
         ProductManager pm = ProductManager.getInstance();
         try {

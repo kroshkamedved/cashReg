@@ -30,15 +30,23 @@ public class CheckManager {
             "                                                           and cast(o.date as  date) = current_date()" +
             "                                                       order by o.id asc";
     private static final String SELECT_CHECKS_FOR_SENIOR_CASHIER = "select o.id, o.date, o.created_by, oi.product_id, oi.product_name, g.description, oi.quantity, g.price, g.units_id" +
-                                                                            " from order_items oi" +
+            " from order_items oi" +
             "                                                                join orders o on o.id = oi.order_id " +
             "                                                                join goods g on oi.product_id = g.id" +
-            "                                                                and cast(o.date as  date) = ?" +
-            "                                                                order by o.id asc" ;/*+
+            "                                                                and cast(o.date as  date) = curdate()" +
+            "                                                                order by o.id asc";/*+
+            "                                                                LIMIT ? offset ?";*/
+    private static final String SELECT_CHECKS_FOR_SENIOR_CASHIER_WITH_DATE = "select o.id, o.date, o.created_by, oi.product_id, oi.product_name, g.description, oi.quantity, g.price, g.units_id" +
+            "                                                                   from order_items oi" +
+            "                                                                       join orders o on o.id = oi.order_id " +
+            "                                                                       join goods g on oi.product_id = g.id" +
+            "                                                                   and cast(o.date as  date) like ?" +
+            "                                                                   order by o.id asc";/*+
             "                                                                LIMIT ? offset ?";*/
     private final String INSERT_INTO_ORDERS = "Insert into orders (date,created_by) VALUES (?,?)";
 
     private final String COUNT_ALL_ORDERS = "SELECT COUNT(*) as quantity  FROM orders o where cast(o.date as DATE) = curdate();";
+    private final String COUNT_ALL_ORDERS_FROM_DATE = "SELECT COUNT(*) as quantity  FROM orders o where cast(o.date as DATE) like ";
 
     private static CheckManager instance;
 
@@ -114,7 +122,12 @@ public class CheckManager {
         try {
             connection = dbManager.getConnection();
             st = connection.createStatement();
-            rsOrderUantity = st.executeQuery(COUNT_ALL_ORDERS);
+            String date = req.getParameter("checksForDate");
+            if (date == null) {
+                rsOrderUantity = st.executeQuery(COUNT_ALL_ORDERS);
+            } else {
+                rsOrderUantity = st.executeQuery(COUNT_ALL_ORDERS_FROM_DATE+ "'" + date + "'");
+            }
             rsOrderUantity.next();
             int ordersQuantity = rsOrderUantity.getInt("quantity");
             int noOfPages = (int) Math.ceil(ordersQuantity * 1.0 / recordsPerPage);
@@ -123,16 +136,21 @@ public class CheckManager {
                 prepStat = connection.prepareStatement(SELECT_CHECKS_FOR_CASHIER);
                 prepStat.setLong(1, usr.getId());
             } else {
-                prepStat = connection.prepareStatement(SELECT_CHECKS_FOR_SENIOR_CASHIER);
-                //Date date = new Date();
-               // Timestamp timeStamp = new Timestamp(date.getTime());
-                prepStat.setObject(1, Instant.now().atZone(ZoneId.of("Europe/Kiev")).toLocalDate() );
-                //added for pagination
-                prepStat.setInt(2, recordsPerPage);
-                prepStat.setInt(3, (page - 1) * recordsPerPage);
 
-                req.setAttribute("noOfPages", noOfPages);
-                req.setAttribute("currentPage", page);
+                if (date == null) {
+                    prepStat = connection.prepareStatement(SELECT_CHECKS_FOR_SENIOR_CASHIER);
+                } else {
+                    prepStat = connection.prepareStatement(SELECT_CHECKS_FOR_SENIOR_CASHIER_WITH_DATE);
+                    //Date date = new Date();
+                    // Timestamp timeStamp = new Timestamp(date.getTime());
+                    //prepStat.setObject(1, Instant.now().atZone(ZoneId.of("Europe/Kiev")).toLocalDate() );
+                    prepStat.setString(1, date);
+                    //added for pagination
+                    // prepStat.setInt(2, recordsPerPage);
+                    //prepStat.setInt(3, (page - 1) * recordsPerPage);
+                }
+                req.getSession().setAttribute("noOfPages", noOfPages);
+                // req.setAttribute("currentPage", page);
             }
             rs = prepStat.executeQuery();
             List<Order> orders = extractOrders(rs);
@@ -163,7 +181,7 @@ public class CheckManager {
             orders.get(orderItemOrderID).getOrderItems().add(item);
         }
         List<Order> list = new ArrayList<>(orders.values());
-        list.sort((a,b)-> (int) (b.getId() - a.getId()));
+        list.sort((a, b) -> (int) (b.getId() - a.getId()));
         return list;
     }
 }

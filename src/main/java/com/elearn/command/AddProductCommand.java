@@ -8,16 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AddProductCommand implements Command {
     @Override
-    public void initContext() {
-
-    }
-
-    @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws DBException {
         ProductManager pm = ProductManager.getInstance();
         pm.createProduct(req);
         return "cabinet/commodity_expert_page/addedItemPage";
     }
-
-
 }

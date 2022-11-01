@@ -25,27 +25,23 @@
 
 
 <div class="container">
-<form action"/fp/controller">
-    <input type="date" name="search" >
-    <button name="orderFromDate" value="submit">from</button>
-</form>
-    <c:forEach var="order" items="${orders}">
+    <form action="/fp/cabinet/admin_page/checks" method="get">
+        <input type="date" name="checksForDate">
+        <button type="submit">get orders</button>
+    </form>
+    <c:forEach var="order" items="${orders}" begin="${(page-1)*2}" end="${((page-1)*2)+1}">
         <table class="table">
             <thead>
             <tr>
                 <th>Order #${order.id}</th>
-
                 <c:if test="${usr.role eq UserRole.SENIOR_CASHIER}">
                     <th>delete order ${order.id}</th>
                 </c:if>
-
-
             </tr>
             </thead>
             <tbody>
             <tr>
                 <td>
-
                     <table class="table">
                         <thead>
                         <tr>
@@ -83,9 +79,7 @@
                         </tbody>
                         </c:forEach>
                     </table>
-
                 </td>
-
                 <c:if test="${usr.role eq UserRole.SENIOR_CASHIER}">
                     <td>
                         <form action="/fp/controller" method="post">
@@ -102,19 +96,19 @@
     <section>
         <c:if test="${usr.role eq UserRole.SENIOR_CASHIER}">
         <div class="counter">
-            <h5>${currentPage}</h5>
+            <h5>${page}</h5>
             <div class="buttons">
                 <form action="/fp/controller" method="get">
-                    <c:if test="${currentPage > 1}">
+                    <c:if test="${page > 1}">
                         <td>
-                            <a href="/fp/cabinet/admin_page/checks?page=${currentPage-1}">Previous</a>
+                            <a href="/fp/cabinet/admin_page/checks?page=${page-1}">Previous</a>
                         </td>
                     </c:if>
                     <table>
                         <tr>
                             <c:forEach var="i" begin="1" end="${noOfPages}">
                                 <c:choose>
-                                    <c:when test="${currentPage eq i}">
+                                    <c:when test="${page eq i}">
                                         <td>${i}</td>
                                     </c:when>
                                     <c:otherwise>
@@ -126,9 +120,9 @@
                             </c:forEach>
                         </tr>
                     </table>
-                    <c:if test="${currentPage lt noOfPages}">
+                    <c:if test="${page lt noOfPages}">
                         <td>
-                            <a href="/fp/cabinet/admin_page/checks?page=${currentPage + 1}">Next</a>
+                            <a href="/fp/cabinet/admin_page/checks?page=${page + 1}">Next</a>
                         </td>
                     </c:if>
                 </form>

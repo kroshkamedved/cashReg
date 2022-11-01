@@ -21,8 +21,6 @@ public class CommandContainer {
 
         //....
     }
-
-
     private CommandContainer() {
     }
 

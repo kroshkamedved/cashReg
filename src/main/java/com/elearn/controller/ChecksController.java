@@ -21,25 +21,23 @@ public class ChecksController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info(req.getQueryString());
         User usr = (User) req.getSession().getAttribute("usr");
         CheckManager checkManager = CheckManager.getInstance();
         String path = "/WEB-INF/view/checks.jsp";
         try {
-
-           Object obj = req.getParameter("search");
-            logger.trace(obj.toString());
-
             int recordsPerPage = 2;
+
             if (req.getParameter("page") != null) {
                 int page = Integer.parseInt(req.getParameter("page"));
-                req.getSession().setAttribute("page", page);
+                req.setAttribute("page", page);
+            } else {
+                int page = (req.getSession().getAttribute("page") != null)
+                        ? (int) req.getSession().getAttribute("page")
+                        : 1;
+                req.setAttribute("page", page);
+                checkManager.showChecks(usr, req, page, recordsPerPage);
             }
-            int page = (req.getSession().getAttribute("page") != null)
-                    ? (int) req.getSession().getAttribute("page")
-                    : 1;
-
-            checkManager.showChecks(usr, req, page, recordsPerPage);
-
         } catch (DBException e) {
             path = req.getServletContext().getAttribute("app") + "/error.jsp";
             logger.error("ChecksController doGet() forwarded to ==> " + path);

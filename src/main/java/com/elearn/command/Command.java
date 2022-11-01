@@ -6,6 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface Command {
-    void initContext();
+    default void initContext() {
+
+    }
+
     String execute(HttpServletRequest req, HttpServletResponse resp) throws AppException;
 }

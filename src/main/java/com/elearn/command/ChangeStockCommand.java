@@ -7,10 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ChangeStockCommand implements Command {
-    @Override
-    public void initContext() {
-
-    }
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws AppException {
