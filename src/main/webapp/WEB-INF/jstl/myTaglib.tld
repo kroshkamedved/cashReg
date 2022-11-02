@@ -8,7 +8,7 @@
 
     <tag>
         <name>unitTag</name>
-        <tag-class>com.elearn.tag.UnitTag</tag-class>
+        <tag-class>com.elearn.fp.tag.UnitTag</tag-class>
         <attribute>
             <name>unit</name>
             <required>true</required>

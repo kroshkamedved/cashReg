@@ -47,6 +47,6 @@
     </jsp-config>
 
     <listener>
-        <listener-class>com.elearn.controller.listener.MyServletContextListener</listener-class>
+        <listener-class>com.elearn.fp.controller.listener.MyServletContextListener</listener-class>
     </listener>
 </web-app>
