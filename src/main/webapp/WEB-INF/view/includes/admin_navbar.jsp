@@ -16,16 +16,16 @@
                                 <fmt:message key="common.info.language"/>
                             </a>
                             <ul class="dropdown-menu">
-                                <form action="/fp/controller" method="post">
-                                    <input type="hidden" name="command" value="changeLanguage">
-
-                                    <li>
-                                        <button class="ui-button" type="submit" name="loc" value="eng">eng</button>
-                                    </li>
-                                    <li>
-                                        <button class="ui-button" type="submit" name="loc" value="ua">ua</button>
-                                    </li>
-                                </form>
+                                <c:url var="engLoc" value="/controller">
+                                    <c:param name="command" value="changeLanguage"></c:param>
+                                    <c:param name="loc" value="eng"></c:param>
+                                </c:url>
+                                <c:url var="uaLoc" value="/controller">
+                                    <c:param name="command" value="changeLanguage"></c:param>
+                                    <c:param name="loc" value="ua"></c:param>
+                                </c:url>
+                                <li><a class="dropdown-item" href="${uaLoc}">UA</a></li>
+                                <li><a class="dropdown-item" href="${engLoc}">ENG</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -41,7 +41,10 @@
                             Reports
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="z_report.jsp">"Z" Reports</a></li>
+                            <c:url var="z_report" value="/controller">
+                                <c:param name="command" value="zReport"></c:param>
+                            </c:url>
+                            <li><a class="dropdown-item" href="${z_report}">"Z" Reports</a></li>
                             <li><a class="dropdown-item" href="x_report.jsp">"X" Reports</a></li>
                         </ul>
                     </li>

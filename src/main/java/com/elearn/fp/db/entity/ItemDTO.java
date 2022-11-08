@@ -91,4 +91,17 @@ public class ItemDTO {
     public void setProductUnit(String productUnit) {
         this.productUnit = productUnit;
     }
+
+    @Override
+    public String toString() {
+        return "ItemDTO{" +
+                "productID=" + productID +
+                ", productName='" + productName + '\'' +
+                ", productDescription='" + productDescription + '\'' +
+                ", productQuantity=" + productQuantity +
+                ", productUnitId=" + productUnitId +
+                ", productPrice=" + productPrice +
+                ", productUnit='" + productUnit + '\'' +
+                '}';
+    }
 }

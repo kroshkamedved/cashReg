@@ -3,7 +3,6 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
-
     <servlet>
         <servlet-name>admin_jsp</servlet-name>
         <jsp-file>/WEB-INF/view/admin_page.jsp</jsp-file>
@@ -32,7 +31,6 @@
         <servlet-name>checkConfirmed</servlet-name>
         <url-pattern>/cabinet/cashier_page/check_confirmed</url-pattern>
     </servlet-mapping>
-
 
     <context-param>
         <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>

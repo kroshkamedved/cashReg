@@ -50,9 +50,9 @@ public class UnitTagTest {
      //   when(names.findFirst()).thenReturn(name);
     //    when(name.get()).thenReturn("kg");
 
+
         unitTag.setUnit(1);
         unitTag.doStartTag();
-
 
     }
 

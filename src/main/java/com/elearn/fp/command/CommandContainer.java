@@ -18,9 +18,11 @@ public class CommandContainer {
         commands.put("addProductToCart", new AddProductToCartCommand());
         commands.put("deleteItemFromOrder", new DeleteItemFromOrderCommand());
         commands.put("deleteWholeOrder", new DeleteWholeOrderCommand());
+        commands.put("zReport", new CreateZReportCommand());
 
         //....
     }
+
     private CommandContainer() {
     }
 

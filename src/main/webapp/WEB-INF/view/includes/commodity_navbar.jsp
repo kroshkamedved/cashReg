@@ -16,20 +16,22 @@
                                 <fmt:message key="common.info.language"/>
                             </a>
                             <ul class="dropdown-menu">
-                                <form action="/fp/controller" method="post">
-                                    <input type="hidden" name="command" value="changeLanguage">
-                                    <li>
-                                        <button class="ui-button" type="submit" name="loc" value="eng">eng</button>
-                                    </li>
-                                    <li>
-                                        <button class="ui-button" type="submit" name="loc" value="ua">ua</button>
-                                    </li>
-                                </form>
+                                <c:url var="engLoc" value="/controller">
+                                    <c:param name="command" value="changeLanguage"></c:param>
+                                    <c:param name="loc" value="eng"></c:param>
+                                </c:url>
+                                <c:url var="uaLoc" value="/controller">
+                                    <c:param name="command" value="changeLanguage"></c:param>
+                                    <c:param name="loc" value="ua"></c:param>
+                                </c:url>
+                                <li><a class="dropdown-item" href="${uaLoc}">UA</a></li>
+                                <li><a class="dropdown-item" href="${engLoc}">ENG</a></li>
                             </ul>
                         </li>
                     </ul>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="${app}/logout"><fmt:message key="common.info.cabinet.logout"/></a>
+                        <a class="nav-link active" aria-current="page" href="${app}/logout"><fmt:message
+                                key="common.info.cabinet.logout"/></a>
                     </li>
                     <!--li class="nav-item">
                         <a class="nav-link disabled">Disabled</a>

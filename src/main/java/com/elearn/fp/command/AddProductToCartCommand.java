@@ -1,7 +1,7 @@
 package com.elearn.fp.command;
 
 import com.elearn.fp.exception.DBException;
-import com.elearn.fp.logic.ProductManager;
+import com.elearn.fp.service.ProductManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

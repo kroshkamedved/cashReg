@@ -26,7 +26,6 @@
                     <button type="submit" class="btn btn-primary">Login</button>
                 </div>
 
-
                 <%@include file="WEB-INF/view/includes/footer.jsp" %>
 
 </body>

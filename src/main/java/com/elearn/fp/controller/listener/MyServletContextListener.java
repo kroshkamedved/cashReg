@@ -1,7 +1,7 @@
 package com.elearn.fp.controller.listener;
 
 import com.elearn.fp.exception.DBException;
-import com.elearn.fp.logic.ProductManager;
+import com.elearn.fp.service.ProductManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +20,7 @@ public class MyServletContextListener implements ServletContextListener {
         sc.setAttribute("contextLogger", contextLogger);
         try {
             sc.setAttribute("units", ProductManager.getInstance().getUnitList());
-            contextLogger.trace("listener successfully LOADED");
+            contextLogger.trace("Context-listener successfully LOADED");
         } catch (DBException e) {
             contextLogger.error("cannot load units from db in context initializing block", e);
         }

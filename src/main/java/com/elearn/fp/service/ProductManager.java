@@ -1,4 +1,4 @@
-package com.elearn.fp.logic;
+package com.elearn.fp.service;
 
 import com.elearn.fp.exception.DBException;
 import com.elearn.fp.db.entity.ItemDTO;

@@ -2,7 +2,7 @@ package com.elearn.fp.controller;
 
 import com.elearn.fp.exception.DBException;
 import com.elearn.fp.db.entity.ItemDTO;
-import com.elearn.fp.logic.CheckManager;
+import com.elearn.fp.service.CheckManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

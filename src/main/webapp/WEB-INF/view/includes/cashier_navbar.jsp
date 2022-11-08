@@ -16,15 +16,16 @@
                                 <fmt:message key="common.info.language"/>
                             </a>
                             <ul class="dropdown-menu">
-                                <form action="/fp/controller" method="post">
-                                    <input type="hidden" name="command" value="changeLanguage">
-                                    <li class="nav-item">
-                                        <button class="ui-button" type="submit" name="loc" value="eng">eng</button>
-                                    </li>
-                                    <li class="nav-item">
-                                        <button class="ui-button" type="submit" name="loc" value="ua">ua</button>
-                                    </li>
-                                </form>
+                                <c:url var="engLoc" value="/controller">
+                                    <c:param name="command" value="changeLanguage"></c:param>
+                                    <c:param name="loc" value="eng"></c:param>
+                                </c:url>
+                                <c:url var="uaLoc" value="/controller">
+                                    <c:param name="command" value="changeLanguage"></c:param>
+                                    <c:param name="loc" value="ua"></c:param>
+                                </c:url>
+                                <li><a class="dropdown-item" href="${uaLoc}">UA</a></li>
+                                <li><a class="dropdown-item" href="${engLoc}">ENG</a></li>
                             </ul>
                         </li>
                     </ul>

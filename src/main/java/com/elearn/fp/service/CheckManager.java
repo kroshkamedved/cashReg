@@ -1,4 +1,4 @@
-package com.elearn.fp.logic;
+package com.elearn.fp.service;
 
 import com.elearn.fp.exception.DBException;
 import com.elearn.fp.db.entity.ItemDTO;
@@ -115,19 +115,19 @@ public class CheckManager {
         Connection connection = null;
         Statement st = null;
         PreparedStatement prepStat = null;
-        ResultSet rsOrderUantity = null;
+        ResultSet rsOrderQuantity = null;
         ResultSet rs = null;
         try {
             connection = dbManager.getConnection();
             st = connection.createStatement();
             String date = req.getParameter("checksForDate");
             if (date == null) {
-                rsOrderUantity = st.executeQuery(COUNT_ALL_ORDERS);
+                rsOrderQuantity = st.executeQuery(COUNT_ALL_ORDERS);
             } else {
-                rsOrderUantity = st.executeQuery(COUNT_ALL_ORDERS_FROM_DATE+ "'" + date + "'");
+                rsOrderQuantity = st.executeQuery(COUNT_ALL_ORDERS_FROM_DATE + "'" + date + "'");
             }
-            rsOrderUantity.next();
-            int ordersQuantity = rsOrderUantity.getInt("quantity");
+            rsOrderQuantity.next();
+            int ordersQuantity = rsOrderQuantity.getInt("quantity");
             int noOfPages = (int) Math.ceil(ordersQuantity * 1.0 / recordsPerPage);
 
             if (currentRole == UserRole.CASHIER) {
@@ -157,7 +157,7 @@ public class CheckManager {
             logger.error("cannot do showChecks", e);
             throw new DBException("cannot do showChecks", e);
         } finally {
-            JdbcUtils.closeClosable(rs, rsOrderUantity, st, prepStat, connection);
+            JdbcUtils.closeClosable(rs, rsOrderQuantity, st, prepStat, connection);
         }
     }
 
@@ -181,5 +181,22 @@ public class CheckManager {
         List<Order> list = new ArrayList<>(orders.values());
         list.sort((a, b) -> (int) (b.getId() - a.getId()));
         return list;
+    }
+
+    public List<Order> getTodayChecks(HttpServletRequest request) throws DBException {
+        Connection connection = null;
+
+        Statement st = null;
+        ResultSet rs = null;
+        try {
+            connection = dbManager.getConnection();
+            st = connection.createStatement();
+            rs = st.executeQuery(SELECT_CHECKS_FOR_SENIOR_CASHIER);
+            return extractOrders(rs);
+        } catch (SQLException e) {
+            throw new DBException("cannot get orders for z-report", e);
+        } finally {
+            JdbcUtils.closeClosable(rs, st, connection);
+        }
     }
 }

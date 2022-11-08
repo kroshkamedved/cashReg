@@ -3,7 +3,7 @@ package com.elearn.fp.command;
 import com.elearn.fp.exception.DBException;
 import com.elearn.fp.db.entity.User;
 import com.elearn.fp.db.entity.UserRole;
-import com.elearn.fp.logic.UserManager;
+import com.elearn.fp.service.UserManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

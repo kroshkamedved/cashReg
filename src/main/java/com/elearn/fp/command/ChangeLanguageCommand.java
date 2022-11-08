@@ -10,6 +10,6 @@ public class ChangeLanguageCommand implements Command {
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws AppException {
         String loc = req.getParameter("loc");
         req.getSession().setAttribute("loc", loc);
-        return "/fp/";
+        return ((String) req.getSession().getAttribute("lastPage"));
     }
 }
