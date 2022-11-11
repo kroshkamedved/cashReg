@@ -19,6 +19,8 @@ public class CommandContainer {
         commands.put("deleteItemFromOrder", new DeleteItemFromOrderCommand());
         commands.put("deleteWholeOrder", new DeleteWholeOrderCommand());
         commands.put("zReport", new CreateZReportCommand());
+        commands.put("setItemQuantity", new SetItemQuantityCommand());
+        commands.put("confirmCheck", new ConfirmCheckCommand());
 
         //....
     }

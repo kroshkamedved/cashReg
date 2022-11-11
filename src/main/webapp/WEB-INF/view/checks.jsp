@@ -23,13 +23,25 @@
     </c:when>
 </c:choose>
 
-
 <div class="container">
     <form action="/fp/cabinet/admin_page/checks" method="get">
-        <input type="date" name="checksForDate">
-        <button type="submit">get orders</button>
+        <select name="recordsPerPage">
+            <option selected>${recordsPerPage}</option>
+            <c:forEach begin="1" end="${orders.size()}"
+                       var="k">
+                <option value="${k}">${k}</option>
+            </c:forEach>
+        </select>
+        <button type="submit">RecordsPerPage</button>
     </form>
-    <c:forEach var="order" items="${orders}" begin="${(page-1)*2}" end="${((page-1)*2)+1}">
+    <c:if test="${usr.role eq UserRole.SENIOR_CASHIER}">
+        <form action="/fp/cabinet/admin_page/checks" method="get">
+            <input type="date" name="checksForDate">
+            <button type="submit">get orders</button>
+        </form>
+    </c:if>
+    <c:forEach var="order" items="${orders}" begin="${(page-1)*recordsPerPage}"
+               end="${((page-1)*recordsPerPage)+recordsPerPage-1}">
         <table class="table">
             <thead>
             <tr>
@@ -94,7 +106,7 @@
         </table>
     </c:forEach>
     <section>
-        <c:if test="${usr.role eq UserRole.SENIOR_CASHIER}">
+        <%--  <c:if test="${usr.role eq UserRole.SENIOR_CASHIER}">--%>
         <div class="counter">
             <h5>${page}</h5>
             <div class="buttons">
@@ -129,7 +141,7 @@
             </div>
         </div>
     </section>
-    </c:if>
+    <%--   </c:if>--%>
 </div>
 <%@include file="includes/footer.jsp" %>
 </body>

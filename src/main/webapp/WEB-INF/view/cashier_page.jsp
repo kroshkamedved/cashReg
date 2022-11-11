@@ -40,7 +40,7 @@
         <c:if test="${fn:length(cart) > 0}">
         <div class="card-header text-center"><fmt:message key="cashier.cart.info.header"/></div>
         <div class="card-body" align="center">
-            <form action="cashier_page" method="post">
+            <form action="/fp/controller" method="post">
                 <table border="1" cellpadding="5" cellspacing="5">
                     <tr>
                         <th>Item ID</th>
@@ -66,7 +66,8 @@
                                         do correct view
                                     </c:when>
                                     <c:otherwise>
-                                        <form action="/fp/cabinet/cashier_page" method="post">
+                                        <form action="/fp/controller" method="post">
+                                            <input type="hidden" name="command" value="setItemQuantity">
                                             <select name="unit_quantity" id="select">
                                                 <c:forEach begin="${cart.get(itemDTO)}" end="${itemDTO.productQuantity}"
                                                            var="k">
@@ -97,10 +98,13 @@
                             <form action="/fp/cabinet/cashier_page" method="get">
                                 <button name="clear" value="true"/>
                             </form>
-                            "<fmt:message
-                                key="cashier.cart.action.clean"/>"</button>
-                            <button type="submit" name="checkClosed" value="true"><fmt:message
-                                    key="cashier.actions.confirmOrder"/></button>
+                            <form action="/fp/controller" method="post">
+                                <input type="hidden" name="command" value="confirmCheck">
+                                "<fmt:message
+                                    key="cashier.cart.action.clean"/>"</button>
+                                <button type="submit" name="checkClosed" value="true"><fmt:message
+                                        key="cashier.actions.confirmOrder"/></button>
+                            </form>
                         </c:if>
                     </div>
                 </section>

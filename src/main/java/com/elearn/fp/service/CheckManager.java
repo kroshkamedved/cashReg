@@ -129,7 +129,7 @@ public class CheckManager {
             rsOrderQuantity.next();
             int ordersQuantity = rsOrderQuantity.getInt("quantity");
             int noOfPages = (int) Math.ceil(ordersQuantity * 1.0 / recordsPerPage);
-
+            req.getSession().setAttribute("noOfPages", noOfPages);
             if (currentRole == UserRole.CASHIER) {
                 prepStat = connection.prepareStatement(SELECT_CHECKS_FOR_CASHIER);
                 prepStat.setLong(1, usr.getId());
@@ -147,7 +147,7 @@ public class CheckManager {
                     // prepStat.setInt(2, recordsPerPage);
                     //prepStat.setInt(3, (page - 1) * recordsPerPage);
                 }
-                req.getSession().setAttribute("noOfPages", noOfPages);
+
                 // req.setAttribute("currentPage", page);
             }
             rs = prepStat.executeQuery();

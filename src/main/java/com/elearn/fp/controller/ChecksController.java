@@ -24,8 +24,16 @@ public class ChecksController extends HttpServlet {
         User usr = (User) req.getSession().getAttribute("usr");
         CheckManager checkManager = CheckManager.getInstance();
         String path = "/WEB-INF/view/checks.jsp";
+        int recordsPerPage = 2;
         try {
-            int recordsPerPage = 2;
+            if (req.getParameter("recordsPerPage") != null) {
+                recordsPerPage = Integer.parseInt(req.getParameter("recordsPerPage"));
+                req.getSession().setAttribute("recordsPerPage", recordsPerPage);
+            } else if (req.getSession().getAttribute("recordsPerPage") == null) {
+                req.getSession().setAttribute("recordsPerPage", recordsPerPage);
+            } else {
+                recordsPerPage = (int) req.getSession().getAttribute("recordsPerPage");
+            }
 
             if (req.getParameter("page") != null) {
                 int page = Integer.parseInt(req.getParameter("page"));

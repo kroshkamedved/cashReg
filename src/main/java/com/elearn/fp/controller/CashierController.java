@@ -46,33 +46,4 @@ public class CashierController extends HttpServlet {
         req.getServletContext().getRequestDispatcher(url).forward(req, resp);
         logger.trace("cashier controller DO GET executed");
     }
-
-    //TODO take away doPost from servlet. Relocate logic to the commands interface
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        HashMap<ItemDTO, Integer> list = (HashMap<ItemDTO, Integer>) req.getSession().getAttribute("cart");
-        if (req.getParameter("edit_goods_id") != null) {
-            Integer productId = Integer.parseInt(req.getParameter("edit_goods_id"));
-            Optional<ItemDTO> itemDTO = list.keySet().stream().filter(k -> k.getProductID() == productId).findFirst();
-
-            Integer unitQuant = Integer.parseInt(req.getParameter("unit_quantity"));
-            list.replace(itemDTO.get(), unitQuant);
-        }
-
-        if (req.getParameter("checkClosed") != null) {
-            try {
-                CheckManager.getInstance().confirmCheck(req, list);
-                list.clear();
-                resp.sendRedirect("/fp/cabinet/cashier_page/check_confirmed");
-            } catch (DBException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            resp.sendRedirect("/fp/cabinet/cashier_page");
-        }
-
-
-        logger.trace("Cashier doPost method executed");
-    }
 }
