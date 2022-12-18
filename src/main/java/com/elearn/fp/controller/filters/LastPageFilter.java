@@ -18,6 +18,10 @@ public class LastPageFilter implements Filter {
     }
 
     private boolean pageIsNotValid(HttpServletRequest req) {
-       return  !(req.getRequestURI().contains("controller") || req.getRequestURI().contains("admin_page/zreport"));
+       return  !(req.getRequestURI().contains("controller")
+               ||
+               req.getRequestURI().contains("admin_page/zreport")
+               ||
+               req.getRequestURI().contains("WEB-INF"));
     }
 }

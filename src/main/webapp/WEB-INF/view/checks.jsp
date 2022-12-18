@@ -16,15 +16,15 @@
 <c:choose>
     <c:when test="${usr.role eq UserRole.SENIOR_CASHIER}">
         <%@include file="includes/admin_navbar.jsp" %>
-
+    <div class="container">
+    <form action="/fp/cabinet/admin_page/checks" method="get">
     </c:when>
     <c:when test="${usr.role eq UserRole.CASHIER}">
         <%@include file="includes/cashier_navbar.jsp" %>
+        <div class="container">
+        <form action="/fp/cabinet/cashier_page/checks" method="get">
     </c:when>
 </c:choose>
-
-<div class="container">
-    <form action="/fp/cabinet/admin_page/checks" method="get">
         <select name="recordsPerPage">
             <option selected>${recordsPerPage}</option>
             <c:forEach begin="1" end="${orders.size()}"

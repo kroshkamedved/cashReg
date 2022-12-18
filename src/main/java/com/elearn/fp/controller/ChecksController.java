@@ -24,7 +24,7 @@ public class ChecksController extends HttpServlet {
         User usr = (User) req.getSession().getAttribute("usr");
         CheckManager checkManager = CheckManager.getInstance();
         String path = "/WEB-INF/view/checks.jsp";
-        int recordsPerPage = 2;
+        int recordsPerPage = 1;
         try {
             if (req.getParameter("recordsPerPage") != null) {
                 recordsPerPage = Integer.parseInt(req.getParameter("recordsPerPage"));
