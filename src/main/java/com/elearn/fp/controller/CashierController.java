@@ -21,7 +21,6 @@ public class CashierController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // List<ItemDTO> list = (List<ItemDTO>) req.getSession().getAttribute("cart");
         HashMap<ItemDTO, Integer> list = (HashMap<ItemDTO, Integer>) req.getSession().getAttribute("cart");
 
         if (req.getParameter("edit") != null) {
@@ -37,7 +36,6 @@ public class CashierController extends HttpServlet {
         }
         if (req.getParameter("deleteItemId") != null) {
             int id = Integer.parseInt(req.getParameter("deleteItemId"));
-            // Optional<ItemDTO> first = list.stream().filter(i -> i.getProductID() == id).findFirst();
             Optional<ItemDTO> first = list.keySet().stream().filter(i -> i.getProductID() == id).findFirst();
             list.remove(first.get());
             logger.trace("item with id = " + id + "deleted from list");

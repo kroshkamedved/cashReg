@@ -121,9 +121,13 @@ public class CheckManager {
             connection = dbManager.getConnection();
             st = connection.createStatement();
             String date = req.getParameter("checksForDate");
+            if (date == null && req.getSession().getAttribute("orders") != null) {
+               return;
+            }
             if (date == null) {
                 rsOrderQuantity = st.executeQuery(COUNT_ALL_ORDERS);
             } else {
+                req.getSession().setAttribute("date",date);
                 rsOrderQuantity = st.executeQuery(COUNT_ALL_ORDERS_FROM_DATE + "'" + date + "'");
             }
             rsOrderQuantity.next();

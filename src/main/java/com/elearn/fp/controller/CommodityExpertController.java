@@ -16,11 +16,12 @@ import java.io.IOException;
 public class CommodityExpertController extends HttpServlet {
 
     private static final Logger logger = LogManager.getLogger(CommodityExpertController.class);
+    private static final int DEFAULT_RECORDS_PER_PAGE = 2;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        int recordsPerPage = 2;
+        int recordsPerPage = DEFAULT_RECORDS_PER_PAGE;
         if (req.getParameter("page") != null) {
             int page = Integer.parseInt(req.getParameter("page"));
             req.getSession().setAttribute("page", page);

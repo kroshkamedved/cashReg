@@ -16,6 +16,7 @@ public class DeleteItemFromOrderCommand implements Command {
         } catch (DBException e) {
             throw new AppException(e.getMessage(), e);
         }
-        return "/fp/cabinet/cashier_page/checks";
+        return "/fp" + ((String) req.getSession().getAttribute("lastPage")) + "?checksForDate=" + req.getSession()
+                .getAttribute("date");
     }
 }
