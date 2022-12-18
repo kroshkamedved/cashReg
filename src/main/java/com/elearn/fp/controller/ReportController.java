@@ -53,7 +53,7 @@ public class ReportController extends HttpServlet {
             document.close();
 
             resp.setContentType("application/pdf");
-           // resp.addHeader("Content-Disposition", "attachment; filename=" + report.getName());
+            resp.addHeader("Content-Disposition", "attachment; filename=" + report.getName());
             resp.setContentLength((int) report.length());
 
             FileInputStream fileInputStream = new FileInputStream(report);

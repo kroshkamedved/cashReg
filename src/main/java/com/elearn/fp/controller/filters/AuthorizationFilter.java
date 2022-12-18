@@ -50,8 +50,8 @@ public class AuthorizationFilter implements Filter {
                 return;
             }
         }
-        filterChain.doFilter(request, response);
+        String userLogin = (usr != null) ? usr.getLogin() : "guest";
         response.sendRedirect(forward);
-        logger.info("access forbidden, user " + usr.getLogin() + " was redirected to the cabinet");
+        logger.info("access forbidden, user "+ userLogin +" tried to access: " +request.getRequestURI() + " was redirected to the cabinet");
     }
 }
