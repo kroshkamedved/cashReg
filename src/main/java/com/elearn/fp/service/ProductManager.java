@@ -43,7 +43,7 @@ public class ProductManager {
         dbManager = DBManager.getInstance();
     }
 
-    private static ItemDTO extractProduct(HttpServletRequest req) {
+    private ItemDTO extractProduct(HttpServletRequest req) {
         String productName = req.getParameter("prod_name");
         String productDescription = req.getParameter("description");
         int productQuantity = Integer.parseInt(req.getParameter("prod_quantity"));
@@ -246,7 +246,6 @@ public class ProductManager {
 
     public void addProductToCart(HttpServletRequest req) throws DBException {
         String identifier = req.getParameter("prod_identifier");
-        //List<ItemDTO> cart = (List<ItemDTO>) req.getSession().getAttribute("cart");
         HashMap<ItemDTO, Integer> cart = (HashMap<ItemDTO, Integer>) req.getSession().getAttribute("cart");
         Connection connection = null;
         PreparedStatement ps = null;
@@ -265,7 +264,6 @@ public class ProductManager {
 
             rs = ps.executeQuery();
             while (rs.next()) {
-                //cart.add(extractItem(rs));
                 cart.put(extractItemFromGoodsTable(rs), 1);
             }
             logger.trace("product putted in cart");

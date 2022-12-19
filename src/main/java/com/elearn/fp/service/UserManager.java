@@ -37,13 +37,12 @@ public class UserManager {
         }
     }
 
-    private static User extractUser(ResultSet rs) throws SQLException {
+     static User extractUser(ResultSet rs) throws SQLException {
         User user = new User();
         user.setId(rs.getInt("id"));
         user.setLogin(rs.getString("name"));
         user.setPassword(rs.getString("pass_hash"));
         user.setRole(UserRole.valueOf(rs.getString("role")));
-        System.out.println(user);
         return user;
     }
 

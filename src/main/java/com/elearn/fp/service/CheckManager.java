@@ -60,8 +60,13 @@ public class CheckManager {
     private CheckManager() {
         dbManager = DBManager.getInstance();
     }
-
-    //TODO reduce stock quantity after new order
+    /**
+     * confirm check and update database
+     *
+     * @param request as HttpServletRequest
+     * @param goods as HashMap(item,itemQuantity)
+     * @throws DBException when cannot confirm check
+     */
     public void confirmCheck(HttpServletRequest request, HashMap<ItemDTO, Integer> goods) throws DBException {
         Connection connection = null;
         PreparedStatement createNewOrder = null;
@@ -69,7 +74,7 @@ public class CheckManager {
         long orderId = 0;
         try {
             connection = dbManager.getConnection();
-            // connection.setAutoCommit(false);
+            connection.setAutoCommit(false);
             createNewOrder = connection.prepareStatement(INSERT_INTO_ORDERS, Statement.RETURN_GENERATED_KEYS);
             Date date = new Date();
             Object param = new java.sql.Timestamp(date.getTime());
