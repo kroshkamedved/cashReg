@@ -11,6 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 public class AddProductToCartCommand implements Command {
 
     Logger logger = LogManager.getLogger(AddProductToCartCommand.class);
+
+    /**?
+     * Add product to check
+     * @param req
+     * @param resp
+     * @return servlet url
+     * @throws DBException
+     */
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws DBException {
         ProductManager pm = ProductManager.getInstance();

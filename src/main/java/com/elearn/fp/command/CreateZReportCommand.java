@@ -20,8 +20,17 @@ import java.util.List;
 public class CreateZReportCommand implements Command {
     Logger logger = LogManager.getLogger(CreateZReportCommand.class);
 
+    /**
+     * Command forward the user to the ReportController
+     * @param req
+     * @param resp
+     * @return URI of the ReportController servlet.
+     * @throws AppException
+     */
+
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws AppException {
+        logger.trace("going to generate z report");
         return "cabinet/admin_page/zreport";
     }
 }

@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
+/**
+ * Login commands holds the map with different user types. Checks the user role and redirect to the corresponding cabinet.
+ */
 public class LoginCommand implements Command {
     static final Logger logger = LogManager.getLogger(LoginCommand.class);
     private HashMap<UserRole, String> cabinetsMap;
@@ -28,6 +31,13 @@ public class LoginCommand implements Command {
         cabinetsMap.put(UserRole.CASHIER, "cabinet/cashier_page");
     }
 
+    /**
+     * Checks the user data correctness and redirect to the corresponding cabinet.
+     * @param req
+     * @param resp
+     * @return
+     * @throws DBException
+     */
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws DBException {
         String login = req.getParameter("login");
