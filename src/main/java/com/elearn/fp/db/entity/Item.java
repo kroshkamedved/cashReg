@@ -2,7 +2,7 @@ package com.elearn.fp.db.entity;
 
 import java.util.Objects;
 
-public class ItemDTO {
+public class Item {
 
     private long productID;
     private String productName;
@@ -15,8 +15,8 @@ public class ItemDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ItemDTO)) return false;
-        ItemDTO item = (ItemDTO) o;
+        if (!(o instanceof Item)) return false;
+        Item item = (Item) o;
         return productUnitId == item.productUnitId && Objects.equals(productName, item.productName) && Objects.equals(productDescription, item.productDescription);
     }
 
@@ -33,7 +33,7 @@ public class ItemDTO {
         this.productID = productID;
     }
 
-    public ItemDTO(String productName, String productDescription, int productQuantity, int productUnitId, double productPrice) {
+    public Item(String productName, String productDescription, int productQuantity, int productUnitId, double productPrice) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.productQuantity = productQuantity;
@@ -41,7 +41,7 @@ public class ItemDTO {
         this.productPrice = productPrice;
     }
 
-    public ItemDTO() {
+    public Item() {
     }
 
     public String getProductName() {

@@ -1,4 +1,4 @@
-package com.elearn.fp.controller.filters;
+package com.elearn.fp.filters;
 
 
 import javax.servlet.*;

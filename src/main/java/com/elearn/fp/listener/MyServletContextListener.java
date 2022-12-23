@@ -1,4 +1,4 @@
-package com.elearn.fp.controller.listener;
+package com.elearn.fp.listener;
 
 import com.elearn.fp.exception.DBException;
 import com.elearn.fp.service.ProductManager;

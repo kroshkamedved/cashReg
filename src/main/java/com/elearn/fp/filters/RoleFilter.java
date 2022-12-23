@@ -1,4 +1,4 @@
-package com.elearn.fp.controller.filters;
+package com.elearn.fp.filters;
 
 import com.elearn.fp.db.entity.UserRole;
 import org.apache.logging.log4j.LogManager;

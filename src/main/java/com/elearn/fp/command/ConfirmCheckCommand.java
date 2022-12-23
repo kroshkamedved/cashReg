@@ -1,6 +1,6 @@
 package com.elearn.fp.command;
 
-import com.elearn.fp.db.entity.ItemDTO;
+import com.elearn.fp.db.entity.Item;
 import com.elearn.fp.exception.AppException;
 import com.elearn.fp.exception.DBException;
 import com.elearn.fp.service.CheckManager;
@@ -24,7 +24,7 @@ public class ConfirmCheckCommand implements Command {
      */
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws AppException {
-        HashMap<ItemDTO, Integer> list = (HashMap<ItemDTO, Integer>) req.getSession().getAttribute("cart");
+        HashMap<Item, Integer> list = (HashMap<Item, Integer>) req.getSession().getAttribute("cart");
         if (req.getParameter("checkClosed") != null) {
             try {
                 CheckManager.getInstance().confirmCheck(req, list);

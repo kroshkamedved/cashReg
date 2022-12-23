@@ -67,22 +67,22 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach var="itemDTO" items="${order.orderItems}">
+                        <c:forEach var="item" items="${order.orderItems}">
                         <td>${order.id}</td>
                         <td>${order.cashierId}</td>
-                        <td>${itemDTO.productName}</td>
-                        <td>${itemDTO.productDescription}</td>
-                        <td><my:unitTag unit="${itemDTO.productUnitId}"/></td>
-                        <td>${itemDTO.productPrice}</td>
-                        <td>${itemDTO.productQuantity}</td>
+                        <td>${item.productName}</td>
+                        <td>${item.productDescription}</td>
+                        <td><my:unitTag unit="${item.productUnitId}"/></td>
+                        <td>${item.productPrice}</td>
+                        <td>${item.productQuantity}</td>
 
                         <c:if test="${usr.role eq UserRole.SENIOR_CASHIER}">
                             <td>
                                 <form action="/fp/controller" method="post">
                                     <input type="hidden" name="command" value="deleteItemFromOrder">
                                     <input type="hidden" name="orderId" value="${order.id}">
-                                    <input type="hidden" name="productQuantity" value="${itemDTO.productQuantity}">
-                                    <button name="deleteItemId" value="${itemDTO.productID}"
+                                    <input type="hidden" name="productQuantity" value="${item.productQuantity}">
+                                    <button name="deleteItemId" value="${item.productID}"
                                             type="submit">X
                                     </button>
                                 </form>
@@ -113,7 +113,7 @@
                 <form action="/fp/controller" method="get">
                     <c:if test="${page > 1}">
                         <td>
-                            <a href="/fp/cabinet/admin_page/checks?page=${page-1}">Previous</a>
+                            <a href="/fp/cabinet/${rolePage}/checks?page=${page-1}">Previous</a>
                         </td>
                     </c:if>
                     <table>
@@ -125,7 +125,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <td>
-                                            <a href="/fp/cabinet/admin_page/checks?page=${i}">${i}</a>
+                                            <a href="/fp/cabinet/${rolePage}/checks?page=${i}">${i}</a>
                                         </td>
                                     </c:otherwise>
                                 </c:choose>
@@ -134,7 +134,7 @@
                     </table>
                     <c:if test="${page lt noOfPages}">
                         <td>
-                            <a href="/fp/cabinet/admin_page/checks?page=${page + 1}">Next</a>
+                            <a href="/fp/cabinet/${rolePage}/checks?page=${page + 1}">Next</a>
                         </td>
                     </c:if>
                 </form>

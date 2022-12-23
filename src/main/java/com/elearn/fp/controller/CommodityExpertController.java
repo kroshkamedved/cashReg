@@ -40,7 +40,7 @@ public class CommodityExpertController extends HttpServlet {
             req.setAttribute("edit", false);
         }
         try {
-            req.setAttribute("itemDTOList", goodsManager.getGoods(req, page, recordsPerPage));
+            req.setAttribute("itemList", goodsManager.getGoods(req, page, recordsPerPage));
 
         } catch (DBException e) {
             req.setAttribute("ex", "cannot load product list from DB");
@@ -49,5 +49,4 @@ public class CommodityExpertController extends HttpServlet {
         }
         req.getServletContext().getRequestDispatcher(url).forward(req, resp);
     }
-
 }

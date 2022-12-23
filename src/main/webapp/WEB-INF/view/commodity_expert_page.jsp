@@ -8,10 +8,8 @@
     <title>Commodity expert page</title>
     <%@include file="includes/head.jsp" %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <%--    <jsp:useBean id="loc" scope="session" type="java.lang.String"/>--%>
     <fmt:setLocale value="${loc}"/>
     <fmt:setBundle basename="language"/>
-    <%--    <jsp:useBean id="edit" scope="request" type="java.lang.Boolean"/>--%>
 </head>
 <body>
 <%@include file="includes/commodity_navbar.jsp" %>
@@ -23,7 +21,7 @@
     </h1>
     <p>
         <a class="btn btn-primary" data-bs-toggle="collapse" href="#CollapseAdding" role="button"
-           aria-expanded="false" aria-controls="CollapseAdding">Add new product</a>
+           aria-expanded="false" aria-controls="CollapseAdding"><fmt:message key="commodity.actions.addProduct"/></a>
     </p>
     <div class="col">
         <div class="collapse multi-collapse" id="CollapseAdding">
@@ -34,7 +32,7 @@
                     <form action="/fp/controller" method="post">
                         <input name="command" value="addProduct" type="hidden">
                         <fieldset style="display: table-column; width: 100%">
-                            <legend>Fulfill the form to add the product</legend>
+                            <legend><fmt:message key="commodity.info.cabinet.addProductDescription"/></legend>
                             <p>
                                 <label for="select"><fmt:message key="common.info.cabinet.units"/></label>
                                 <select name="unit_id" id="select">
@@ -44,8 +42,8 @@
                                 </select>
                             </p>
                             <p>
-                                <label><label><fmt:message key="common.info.cabinet.productName"/></label></label>
-                                <input type="text" name="prod_name" placeholder="*product name*">
+                                <label><fmt:message key="common.info.cabinet.productName"/></label>
+                                <input type="text" name="prod_name" placeholder="*0-9a-zA-Zа-яА-Я*">
                             </p>
                             <p>
                                 <label>Product description</label>
@@ -54,7 +52,7 @@
                             <p>
                                 <label>Product quantity</label>
                                 <input type="number" min="1" max="99999" name="prod_quantity"
-                                       placeholder="*product quantity*">
+                                       placeholder="*1-99999*">
                             </p>
                             <p>
                                 <label>Product price per unit</label>
@@ -77,32 +75,32 @@
         <div class="card-body" align="center">
             <table border="1" cellpadding="5" cellspacing="5">
                 <tr>
-                    <th>Item ID</th>
-                    <th>Item name</th>
-                    <th>Description</th>
-                    <th>Units</th>
-                    <th>Price per unit</th>
-                    <th>Remaining quantity</th>
-                    <th><c:if test="${edit}">Change remaining quantity</c:if></th>
-                    <th><c:if test="${edit}">delete item</c:if></th>
+                    <th><fmt:message key="commodity.info.cabinet.table.itemId"/></th>
+                    <th><fmt:message key="commodity.info.cabinet.table.itemName"/></th>
+                    <th><fmt:message key="commodity.info.cabinet.table.description"/></th>
+                    <th><fmt:message key="commodity.info.cabinet.table.units"/></th>
+                    <th><fmt:message key="commodity.info.cabinet.table.pricePerUnit"/></th>
+                    <th><fmt:message key="commodity.info.cabinet.table.quantityLeft"/></th>
+                    <th><c:if test="${edit}"><fmt:message key="commodity.actions.editProduct"/></c:if></th>
+                    <th><c:if test="${edit}"><fmt:message key="commodity.actions.deleteProduct"/></c:if></th>
                 </tr>
 
-                <c:forEach var="itemDTO" items="${itemDTOList}">
+                <c:forEach var="item" items="${itemList}">
                     <tr>
-                        <td>${itemDTO.productID}</td>
-                        <td>${itemDTO.productName}</td>
-                        <td>${itemDTO.productDescription}</td>
-                        <td><my:unitTag unit="${itemDTO.productUnitId}"/></td>
-                        <td>${itemDTO.productPrice}</td>
-                        <td>${itemDTO.productQuantity}</td>
+                        <td>${item.productID}</td>
+                        <td>${item.productName}</td>
+                        <td>${item.productDescription}</td>
+                        <td><my:unitTag unit="${item.productUnitId}"/></td>
+                        <td>${item.productPrice}</td>
+                        <td>${item.productQuantity}</td>
                         <c:if test="${edit}">
                             <td>
                                 <form action="/fp/controller" method="post">
                                     <input type="hidden" name="command" value="changeStock">
-                                    <input type="hidden" name="productId" value=${itemDTO.productID}>
+                                    <input type="hidden" name="productId" value=${item.productID}>
                                     <input type="hidden" name="page" value="${page}">
                                     <input type="number" name="newStock"
-                                           placeholder=${itemDTO.productQuantity}
+                                           placeholder=${item.productQuantity}
                                                    min="1" max="9999">
                                     <button type="submit" class="btn btn-success" type="submit">SUBMIT</button>
                                 </form>
@@ -110,7 +108,7 @@
                             <td>
                                 <form action="/fp/controller" method="post">
                                     <input type="hidden" name="command" value="deleteItem">
-                                    <button class="delete_btn" name="deleteItemId" value="${itemDTO.productID}"
+                                    <button class="delete_btn" name="deleteItemId" value="${item.productID}"
                                             type="submit">X
                                     </button>
                                 </form>

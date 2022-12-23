@@ -1,8 +1,6 @@
 package com.elearn.fp.controller;
 
-import com.elearn.fp.exception.DBException;
-import com.elearn.fp.db.entity.ItemDTO;
-import com.elearn.fp.service.CheckManager;
+import com.elearn.fp.db.entity.Item;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +19,7 @@ public class CashierController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HashMap<ItemDTO, Integer> list = (HashMap<ItemDTO, Integer>) req.getSession().getAttribute("cart");
+        HashMap<Item, Integer> list = (HashMap<Item, Integer>) req.getSession().getAttribute("cart");
 
         if (req.getParameter("edit") != null) {
             req.setAttribute("edit", Boolean.valueOf(req.getParameter("edit")));
@@ -36,7 +34,7 @@ public class CashierController extends HttpServlet {
         }
         if (req.getParameter("deleteItemId") != null) {
             int id = Integer.parseInt(req.getParameter("deleteItemId"));
-            Optional<ItemDTO> first = list.keySet().stream().filter(i -> i.getProductID() == id).findFirst();
+            Optional<Item> first = list.keySet().stream().filter(i -> i.getProductID() == id).findFirst();
             list.remove(first.get());
             logger.trace("item with id = " + id + "deleted from list");
         }

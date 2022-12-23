@@ -52,14 +52,14 @@
                         <th>delete item</th>
                     </tr>
 
-                        <%--  <c:forEach var="itemDTO" items="${cart}">--%>
-                    <c:forEach var="itemDTO" items="${cart.keySet()}">
+                        <%--  <c:forEach var="item" items="${cart}">--%>
+                    <c:forEach var="item" items="${cart.keySet()}">
                         <tr>
-                            <td>${itemDTO.productID}</td>
-                            <td>${itemDTO.productName}</td>
-                            <td>${itemDTO.productDescription}</td>
-                            <td><my:unitTag unit="${itemDTO.productUnitId}"/></td>
-                            <td>${itemDTO.productPrice}</td>
+                            <td>${item.productID}</td>
+                            <td>${item.productName}</td>
+                            <td>${item.productDescription}</td>
+                            <td><my:unitTag unit="${item.productUnitId}"/></td>
+                            <td>${item.productPrice}</td>
                             <td>
                                 <c:choose>
                                     <c:when test="false">
@@ -69,12 +69,12 @@
                                         <form action="/fp/controller" method="post">
                                             <input type="hidden" name="command" value="setItemQuantity">
                                             <select name="unit_quantity" id="select">
-                                                <c:forEach begin="${cart.get(itemDTO)}" end="${itemDTO.productQuantity}"
+                                                <c:forEach begin="${cart.get(item)}" end="${item.productQuantity}"
                                                            var="k">
                                                     <option value="${k}">${k}</option>
                                                 </c:forEach>
                                             </select>
-                                            <button type="submit" name="edit_goods_id" value="${itemDTO.productID}">OK
+                                            <button type="submit" name="edit_goods_id" value="${item.productID}">OK
                                             </button>
                                         </form>
                                     </c:otherwise>
@@ -83,7 +83,7 @@
                             <td>
                                 <form action="/fp/cabinet/cashier_page" method="get">
                                     <input type="hidden" name="command" value="deleteItem">
-                                    <button name="deleteItemId" value="${itemDTO.productID}"
+                                    <button name="deleteItemId" value="${item.productID}"
                                             type="submit">X
                                     </button>
                                 </form>

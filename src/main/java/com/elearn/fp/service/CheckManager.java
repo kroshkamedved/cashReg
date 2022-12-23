@@ -1,7 +1,7 @@
 package com.elearn.fp.service;
 
+import com.elearn.fp.db.entity.Item;
 import com.elearn.fp.exception.DBException;
-import com.elearn.fp.db.entity.ItemDTO;
 import com.elearn.fp.db.entity.Order;
 import com.elearn.fp.db.entity.User;
 import com.elearn.fp.db.entity.UserRole;
@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.Date;
 
@@ -43,7 +44,7 @@ public class CheckManager {
             "                                                                LIMIT ? offset ?";*/
     private final String INSERT_INTO_ORDERS = "Insert into orders (date,created_by) VALUES (?,?)";
 
-    private final String COUNT_ALL_ORDERS = "SELECT COUNT(*) as quantity  FROM orders o where cast(o.date as DATE) = curdate();";
+    private final String COUNT_ALL_ORDERS = "SELECT COUNT(*) as quantity, curdate() as currentDate  FROM orders o where cast(o.date as DATE) = curdate();";
     private final String COUNT_ALL_ORDERS_FROM_DATE = "SELECT COUNT(*) as quantity  FROM orders o where cast(o.date as DATE) like ";
 
     private static CheckManager instance;
@@ -67,7 +68,7 @@ public class CheckManager {
      * @param goods as HashMap(item,itemQuantity)
      * @throws DBException when cannot confirm check
      */
-    public void confirmCheck(HttpServletRequest request, HashMap<ItemDTO, Integer> goods) throws DBException {
+    public void confirmCheck(HttpServletRequest request, HashMap<Item, Integer> goods) throws DBException {
         Connection connection = null;
         PreparedStatement createNewOrder = null;
         PreparedStatement insertToOrderItems = null;
@@ -89,7 +90,7 @@ public class CheckManager {
             }
             insertToOrderItems = connection.prepareStatement(INSERT_INTO_ORDER_ITEMS);
 
-            for (Map.Entry<ItemDTO, Integer> entry :
+            for (Map.Entry<Item, Integer> entry :
                     goods.entrySet()) {
                 insertToOrderItems.setLong(1, orderId);
                 insertToOrderItems.setLong(2, entry.getKey().getProductID());
@@ -127,9 +128,20 @@ public class CheckManager {
             st = connection.createStatement();
             String date = req.getParameter("checksForDate");
             if (date == null && req.getSession().getAttribute("orders") != null) {
+               if (req.getSession().getAttribute("orders") != null)
+               {
+                   List orders = (List) req.getSession().getAttribute("orders");
+                   int ordersQuantity = orders.size();
+                   int noOfPages = (int) Math.ceil(ordersQuantity * 1.0 / recordsPerPage);
+                   req.getSession().setAttribute("noOfPages", noOfPages);
+               }
                return;
             }
             if (date == null) {
+                rsOrderQuantity = st.executeQuery(" select curdate()");
+                rsOrderQuantity.next();
+                date = rsOrderQuantity.getString(1);
+                req.getSession().setAttribute("date", date);
                 rsOrderQuantity = st.executeQuery(COUNT_ALL_ORDERS);
             } else {
                 req.getSession().setAttribute("date",date);
@@ -140,23 +152,23 @@ public class CheckManager {
             int noOfPages = (int) Math.ceil(ordersQuantity * 1.0 / recordsPerPage);
             req.getSession().setAttribute("noOfPages", noOfPages);
             if (currentRole == UserRole.CASHIER) {
+                req.getSession().setAttribute("rolePage", "cashier_page");
                 prepStat = connection.prepareStatement(SELECT_CHECKS_FOR_CASHIER);
                 prepStat.setLong(1, usr.getId());
             } else {
-
+                req.getSession().setAttribute("rolePage", "admin_page");
                 if (date == null) {
                     prepStat = connection.prepareStatement(SELECT_CHECKS_FOR_SENIOR_CASHIER);
                 } else {
                     prepStat = connection.prepareStatement(SELECT_CHECKS_FOR_SENIOR_CASHIER_WITH_DATE);
                     //Date date = new Date();
-                    // Timestamp timeStamp = new Timestamp(date.getTime());
-                    //prepStat.setObject(1, Instant.now().atZone(ZoneId.of("Europe/Kiev")).toLocalDate() );
+                    //Timestamp timeStamp = new Timestamp(date.getTime());
+                    //prepStat.setObject(1, Instant.now().atZone(ZoneId.of("Europe/Kiev")).toLocalDate());
                     prepStat.setString(1, date);
                     //added for pagination
                     // prepStat.setInt(2, recordsPerPage);
                     //prepStat.setInt(3, (page - 1) * recordsPerPage);
                 }
-
                 // req.setAttribute("currentPage", page);
             }
             rs = prepStat.executeQuery();
@@ -172,7 +184,7 @@ public class CheckManager {
 
     private List<Order> extractOrders(ResultSet rs) throws SQLException {
         Map<Long, Order> orders = new HashMap<>();
-        ItemDTO item;
+        Item item;
         while (rs.next()) {
             long orderItemOrderID = rs.getLong("o.id");
             if (orders.containsKey(orderItemOrderID)) {

@@ -8,6 +8,8 @@
 *.ear
 *.nar
 hs_err_pid*
+c:/temp/logs
+
 
 ##############################
 ## Maven
@@ -45,6 +47,7 @@ out/
 *.ipr
 *.iws
 /.idea/
+fp.iml
 
 ##############################
 ## Eclipse

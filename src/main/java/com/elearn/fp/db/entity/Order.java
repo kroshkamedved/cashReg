@@ -8,7 +8,7 @@ public class Order {
     private long id;
     private long cashierId;
     private Timestamp datetime;
-    private List<ItemDTO> orderItems = new ArrayList<ItemDTO>();
+    private List<Item> orderItems = new ArrayList<Item>();
 
     public long getId() {
         return id;
@@ -34,11 +34,11 @@ public class Order {
         this.datetime = datetime;
     }
 
-    public List<ItemDTO> getOrderItems() {
+    public List<Item> getOrderItems() {
         return orderItems;
     }
 
-    public void setOrderItems(List<ItemDTO> orderItems) {
+    public void setOrderItems(List<Item> orderItems) {
         this.orderItems = orderItems;
     }
 

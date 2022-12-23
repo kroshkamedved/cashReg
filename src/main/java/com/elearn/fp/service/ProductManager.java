@@ -1,7 +1,7 @@
 package com.elearn.fp.service;
 
+import com.elearn.fp.db.entity.Item;
 import com.elearn.fp.exception.DBException;
-import com.elearn.fp.db.entity.ItemDTO;
 import com.elearn.fp.db.entity.Unit;
 import com.elearn.fp.db.utils.DBManager;
 import com.elearn.fp.db.utils.JdbcUtils;
@@ -43,17 +43,17 @@ public class ProductManager {
         dbManager = DBManager.getInstance();
     }
 
-    private ItemDTO extractProduct(HttpServletRequest req) {
+    private Item extractProduct(HttpServletRequest req) {
         String productName = req.getParameter("prod_name");
         String productDescription = req.getParameter("description");
         int productQuantity = Integer.parseInt(req.getParameter("prod_quantity"));
         int productUnitId = Integer.parseInt(req.getParameter("unit_id"));
         double productPrice = Double.parseDouble(req.getParameter("product_price"));
-        return new ItemDTO(productName, productDescription, productQuantity, productUnitId, productPrice);
+        return new Item(productName, productDescription, productQuantity, productUnitId, productPrice);
     }
 
     public void createProduct(HttpServletRequest request) throws DBException {
-        ItemDTO product = extractProduct(request);
+        Item product = extractProduct(request);
         Connection connection = null;
         PreparedStatement insertProductStmnt = null;
         PreparedStatement insertToWarehouseStmnt = null;
@@ -160,18 +160,18 @@ public class ProductManager {
         logger.trace("product successfully deleted");
     }
 
-    public List<ItemDTO> getAllGoods() throws DBException {
+    public List<Item> getAllGoods() throws DBException {
         Connection connection = null;
         Statement statement = null;
         ResultSet rs = null;
-        List<ItemDTO> itemDTOList = new ArrayList<>();
+        List<Item> itemList = new ArrayList<>();
         try {
             connection = dbManager.getConnection();
             statement = connection.createStatement();
             rs = statement.executeQuery(SELECT_ALL_GOODS);
 
             while (rs.next()) {
-                itemDTOList.add(extractItemFromGoodsTable(rs));
+                itemList.add(extractItemFromGoodsTable(rs));
             }
         } catch (SQLException e) {
             logger.error("cannot get goods from DB");
@@ -180,39 +180,39 @@ public class ProductManager {
             JdbcUtils.closeClosable(rs, statement, connection);
         }
         logger.trace("All goods returned");
-        return itemDTOList;
+        return itemList;
     }
 
-    protected ItemDTO extractItemFromGoodsTable(ResultSet rs) throws SQLException {
-        ItemDTO itemDTO = new ItemDTO();
-        itemDTO.setProductID(rs.getInt("id"));
-        itemDTO.setProductName(rs.getString("name"));
-        itemDTO.setProductDescription(rs.getString("description"));
-        itemDTO.setProductPrice(rs.getInt("price"));
-        itemDTO.setProductUnitId(rs.getInt("units_id"));
-        itemDTO.setProductQuantity(rs.getInt("quantity"));
+    protected Item extractItemFromGoodsTable(ResultSet rs) throws SQLException {
+        Item item = new Item();
+        item.setProductID(rs.getInt("id"));
+        item.setProductName(rs.getString("name"));
+        item.setProductDescription(rs.getString("description"));
+        item.setProductPrice(rs.getInt("price"));
+        item.setProductUnitId(rs.getInt("units_id"));
+        item.setProductQuantity(rs.getInt("quantity"));
 
-        return itemDTO;
+        return item;
     }
 
-    protected ItemDTO extractItemFromOrdersItems(ResultSet rs) throws SQLException {
-        ItemDTO itemDTO = new ItemDTO();
-        itemDTO.setProductID(rs.getInt("product_id"));
-        itemDTO.setProductName(rs.getString("product_name"));
-        itemDTO.setProductDescription(rs.getString("description"));
-        itemDTO.setProductPrice(rs.getInt("price"));
-        itemDTO.setProductUnitId(rs.getInt("units_id"));
-        itemDTO.setProductQuantity(rs.getInt("quantity"));
+    protected Item extractItemFromOrdersItems(ResultSet rs) throws SQLException {
+        Item item = new Item();
+        item.setProductID(rs.getInt("product_id"));
+        item.setProductName(rs.getString("product_name"));
+        item.setProductDescription(rs.getString("description"));
+        item.setProductPrice(rs.getInt("price"));
+        item.setProductUnitId(rs.getInt("units_id"));
+        item.setProductQuantity(rs.getInt("quantity"));
 
-        return itemDTO;
+        return item;
     }
 
-    public List<ItemDTO> getGoods(HttpServletRequest req, int page, int recordsPerPage) throws DBException {
+    public List<Item> getGoods(HttpServletRequest req, int page, int recordsPerPage) throws DBException {
         Connection connection = null;
         Statement st = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
-        List<ItemDTO> itemDTOList = new ArrayList<>();
+        List<Item> itemList = new ArrayList<>();
         try {
             connection = dbManager.getConnection();
             st = connection.createStatement();
@@ -232,7 +232,7 @@ public class ProductManager {
             req.setAttribute("currentPage", page);
 
             while (rs.next()) {
-                itemDTOList.add(extractItemFromGoodsTable(rs));
+                itemList.add(extractItemFromGoodsTable(rs));
             }
         } catch (SQLException e) {
             logger.error("cannot get goods from DB");
@@ -241,12 +241,12 @@ public class ProductManager {
             JdbcUtils.closeClosable(rs, ps, st, connection);
         }
         logger.trace("paginated goods shown");
-        return itemDTOList;
+        return itemList;
     }
 
     public void addProductToCart(HttpServletRequest req) throws DBException {
         String identifier = req.getParameter("prod_identifier");
-        HashMap<ItemDTO, Integer> cart = (HashMap<ItemDTO, Integer>) req.getSession().getAttribute("cart");
+        HashMap<Item, Integer> cart = (HashMap<Item, Integer>) req.getSession().getAttribute("cart");
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
