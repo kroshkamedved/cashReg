@@ -13,7 +13,7 @@
 <body>
 <%@include file="includes/admin_navbar.jsp" %>
 <h1 align="center">
-    Hello, ${usr.role} ${usr.login}
+    <fmt:message key="common.info.cabinet.greetings"/>, ${usr.role} ${usr.login}
     <br>
 
 </h1>

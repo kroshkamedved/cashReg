@@ -16,7 +16,7 @@
 <div class="container">
 
     <h1 align="center">
-        Hello, ${usr.role} ${usr.login}
+        <fmt:message key="common.info.cabinet.greetings"/>, ${usr.role} ${usr.login}
         <br>
     </h1>
     <p>
