@@ -8,6 +8,13 @@ function empty() {
     }
 }
 
+function change() {
+    var edit;
+    edit = document.getElementById("edit");
+    edit = !edit;
+   // document.getElementById("editForm").submit();
+}
+
 
 /*function handleClick(clickedId) {
     if (clickedId == "eng")

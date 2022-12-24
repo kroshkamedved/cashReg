@@ -16,23 +16,25 @@
 </head>
 <body>
 <%@include file="includes/cashier_navbar.jsp" %>
-<div class="container">
-
+<div class="container" style="padding: 50px 100px 100px 100px">
     <h1 align="center">
-        Hello, ${usr.role} ${usr.login}
+        <fmt:message key="common.info.cabinet.greetings"/>, ${usr.role} ${usr.login}
         <br>
+        <hr>
     </h1>
     <form action="/fp/controller" method="post">
         <input name="command" value="addProductToCart" type="hidden">
         <fieldset style="display: table-column; width: 100%">
-            <legend>Fulfill the form to add the product</legend>
+            <legend><fmt:message key="cashier.actions.addProductToCart"/></legend>
             <p>
                 <label><fmt:message key="common.info.cabinet.productName"/></label>
                 <input type="text" name="prod_identifier" id="prod_identifier"
                        placeholder="*product name or id*">
             </p>
             <p>
-                <input type="submit" value="Add product" onclick="return empty()"/>
+                <button type="submit" class="btn btn-light" onclick="return empty()">
+                    <fmt:message key="cashier.actions.addProductToCartButton"/>
+                    </button>
             </p>
         </fieldset>
     </form>
@@ -41,18 +43,19 @@
         <div class="card-header text-center"><fmt:message key="cashier.cart.info.header"/></div>
         <div class="card-body" align="center">
             <form action="/fp/controller" method="post">
-                <table border="1" cellpadding="5" cellspacing="5">
+                <table class="table">
+                    <thead class="thead-dark">
                     <tr>
-                        <th>Item ID</th>
-                        <th>Item name</th>
-                        <th>Description</th>
-                        <th>Units id</th>
-                        <th>Price per unit</th>
-                        <th><fmt:message key="common.info.cabinet.quantity"/></th>
-                        <th>delete item</th>
+                        <th scope="col"><fmt:message key="commodity.info.cabinet.table.itemId"/></th>
+                        <th scope="col"><fmt:message key="commodity.info.cabinet.table.itemName"/></th>
+                        <th scope="col"><fmt:message key="commodity.info.cabinet.table.description"/></th>
+                        <th scope="col"><fmt:message key="commodity.info.cabinet.table.units"/></th>
+                        <th scope="col"><fmt:message key="commodity.info.cabinet.table.pricePerUnit"/></th>
+                        <th scope="col"><fmt:message key="common.info.cabinet.quantity"/></th>
+                        <th scope="col"><fmt:message key="commodity.actions.deleteProductFromCart"/></th>
                     </tr>
-
-                        <%--  <c:forEach var="item" items="${cart}">--%>
+                    </thead>
+                    <tbody>
                     <c:forEach var="item" items="${cart.keySet()}">
                         <tr>
                             <td>${item.productID}</td>
@@ -61,24 +64,17 @@
                             <td><my:unitTag unit="${item.productUnitId}"/></td>
                             <td>${item.productPrice}</td>
                             <td>
-                                <c:choose>
-                                    <c:when test="false">
-                                        do correct view
-                                    </c:when>
-                                    <c:otherwise>
-                                        <form action="/fp/controller" method="post">
-                                            <input type="hidden" name="command" value="setItemQuantity">
-                                            <select name="unit_quantity" id="select">
-                                                <c:forEach begin="${cart.get(item)}" end="${item.productQuantity}"
-                                                           var="k">
-                                                    <option value="${k}">${k}</option>
-                                                </c:forEach>
-                                            </select>
-                                            <button type="submit" name="edit_goods_id" value="${item.productID}">OK
-                                            </button>
-                                        </form>
-                                    </c:otherwise>
-                                </c:choose>
+                                <form action="/fp/controller" method="post">
+                                    <input type="hidden" name="command" value="setItemQuantity">
+                                    <select name="unit_quantity" id="select">
+                                        <c:forEach begin="${cart.get(item)}" end="${item.productQuantity}"
+                                                   var="k">
+                                            <option value="${k}">${k}</option>
+                                        </c:forEach>
+                                    </select>
+                                    <button type="submit" name="edit_goods_id" value="${item.productID}">OK
+                                    </button>
+                                </form>
                             </td>
                             <td>
                                 <form action="/fp/cabinet/cashier_page" method="get">
@@ -90,20 +86,21 @@
                             </td>
                         </tr>
                     </c:forEach>
+                    </tbody>
                 </table>
                 <section>
                     <div class="buttons">
 
                         <c:if test="${cart.size() gt 0}">
                             <form action="/fp/cabinet/cashier_page" method="get">
-                                <button name="clear" value="true"/>
+                                <button type="submit" class="btn btn-danger" name="clear" value="true"/>
                             </form>
                             <form action="/fp/controller" method="post">
                                 <input type="hidden" name="command" value="confirmCheck">
-                                "<fmt:message
-                                    key="cashier.cart.action.clean"/>"</button>
-                                <button type="submit" name="checkClosed" value="true"><fmt:message
-                                        key="cashier.actions.confirmOrder"/></button>
+                                "<fmt:message key="cashier.cart.action.clean"/>"</button>
+                                <button type="submit" class="btn btn-success" name="checkClosed" value="true">
+                                    <fmt:message
+                                            key="cashier.actions.confirmOrder"/></button>
                             </form>
                         </c:if>
                     </div>
