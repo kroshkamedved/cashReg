@@ -43,7 +43,7 @@ public class ChecksController extends HttpServlet {
                         ? (int) req.getSession().getAttribute("page")
                         : 1;
                 req.setAttribute("page", page);
-                checkManager.showChecks(usr, req, page, recordsPerPage);
+                checkManager.prepareChecksForView(usr, req, page, recordsPerPage);
             }
         } catch (DBException e) {
             path = req.getServletContext().getAttribute("app") + "/error.jsp";

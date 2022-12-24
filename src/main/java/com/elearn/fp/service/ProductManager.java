@@ -188,7 +188,7 @@ public class ProductManager {
         item.setProductID(rs.getInt("id"));
         item.setProductName(rs.getString("name"));
         item.setProductDescription(rs.getString("description"));
-        item.setProductPrice(rs.getInt("price"));
+        item.setProductPrice(rs.getDouble("price"));
         item.setProductUnitId(rs.getInt("units_id"));
         item.setProductQuantity(rs.getInt("quantity"));
 
@@ -200,7 +200,7 @@ public class ProductManager {
         item.setProductID(rs.getInt("product_id"));
         item.setProductName(rs.getString("product_name"));
         item.setProductDescription(rs.getString("description"));
-        item.setProductPrice(rs.getInt("price"));
+        item.setProductPrice(rs.getDouble("price"));
         item.setProductUnitId(rs.getInt("units_id"));
         item.setProductQuantity(rs.getInt("quantity"));
 
