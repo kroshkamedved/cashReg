@@ -26,6 +26,4 @@ public class AddProductToCartCommand implements Command {
         logger.trace("product added to cart");
         return "cabinet/cashier_page";
     }
-
-
 }

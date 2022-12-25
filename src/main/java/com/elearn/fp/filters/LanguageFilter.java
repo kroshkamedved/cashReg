@@ -6,6 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+/**
+ * Default localization filter. Determines whether localization is set or not and set default one if needed.
+ */
 @WebFilter("/*")
 public class LanguageFilter implements Filter {
     @Override

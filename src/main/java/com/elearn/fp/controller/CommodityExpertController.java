@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+/**
+ * Servlet for commodity expert page
+ */
 @WebServlet("/cabinet/commodity_expert_page")
 public class CommodityExpertController extends HttpServlet {
 

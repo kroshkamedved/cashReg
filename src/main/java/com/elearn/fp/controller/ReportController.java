@@ -21,6 +21,9 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Servlet for report generation
+ */
 @WebServlet({"/cabinet/admin_page/zreport", "/cabinet/admin_page/xreport"})
 public class ReportController extends HttpServlet {
     Logger logger = LogManager.getLogger(ReportController.class);

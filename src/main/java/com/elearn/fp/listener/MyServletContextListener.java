@@ -9,6 +9,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+/**
+ * ServletContextListener
+ */
 public class MyServletContextListener implements ServletContextListener {
     Logger contextLogger = LogManager.getLogger(MyServletContextListener.class);
 

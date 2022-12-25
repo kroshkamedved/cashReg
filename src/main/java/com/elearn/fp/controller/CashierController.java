@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Servlet for cashier page
+ */
 @WebServlet("/cabinet/cashier_page")
 public class CashierController extends HttpServlet {
     Logger logger = LogManager.getLogger(CashierController.class);

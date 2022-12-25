@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class JdbcUtils {
-
+    /**
+     * method for connection closing
+     * @param connection
+     */
     public static void closeConnection(Connection connection) {
         if (connection != null) {
             try {
@@ -16,6 +19,10 @@ public class JdbcUtils {
         }
     }
 
+    /**
+     * method for statement closing
+     * @param statement
+     */
     public static void closeStatement(Statement statement) {
         if (statement != null) {
             try {
@@ -26,6 +33,10 @@ public class JdbcUtils {
         }
     }
 
+    /**
+     * method for preparedstatement closing
+     * @param statement
+     */
     public static void closePreparedStatement(PreparedStatement statement) {
         if (statement != null) {
             try {
@@ -36,6 +47,10 @@ public class JdbcUtils {
         }
     }
 
+    /**
+     * method for connection rollback
+     * @param connection
+     */
     public static void rollback(Connection connection) {
         if (connection != null) {
             try {
@@ -46,6 +61,10 @@ public class JdbcUtils {
         }
     }
 
+    /**
+     * Allows to close any quantity of any object which implements autocloseable interface
+     * @param autoCloseables
+     */
     public static void closeClosable(AutoCloseable... autoCloseables) {
         for (AutoCloseable item :
                 autoCloseables) {

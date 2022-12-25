@@ -9,6 +9,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ *Creates product cart if it's absent in session.
+ */
 @WebFilter(urlPatterns = {"/cabinet/cashier_page/", "/cabinet/cashier_page/*"})
 public class CashierCartFilter implements Filter {
     @Override
@@ -17,7 +20,6 @@ public class CashierCartFilter implements Filter {
         HttpSession session = req.getSession();
         request.setCharacterEncoding("UTF-8");
         if (session.getAttribute("cart") == null) {
-            //  session.setAttribute("cart", new ArrayList<ItemDTO>());
             session.setAttribute("cart", new HashMap<Item, Integer>());
         }
         chain.doFilter(request, response);

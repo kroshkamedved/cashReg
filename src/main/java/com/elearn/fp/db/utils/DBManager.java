@@ -10,6 +10,9 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Class which obtain datasource. Provides the connections for managers which work with db
+ */
 public class DBManager {
 
     private static DBManager instance;
@@ -35,6 +38,11 @@ public class DBManager {
         }
     }
 
+    /**
+     * provides connection
+     * @return Connection
+     * @throws SQLException
+     */
     public Connection getConnection() throws SQLException {
         return ds.getConnection();
     }

@@ -1,5 +1,7 @@
 package com.elearn.fp.db.entity;
-
+/**
+ * POJO class which represent measurement units for store products
+ */
 public class Unit {
     private int id;
     private String name;

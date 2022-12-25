@@ -2,7 +2,9 @@ package com.elearn.fp.db.entity;
 
 import java.io.Serializable;
 import java.util.Objects;
-
+/**
+ * POJO class which represent users in the store with different roles
+ */
 public class User implements Serializable {
 
     private int id;

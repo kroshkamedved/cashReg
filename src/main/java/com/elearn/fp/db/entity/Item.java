@@ -4,6 +4,10 @@ import javax.naming.Context;
 import javax.servlet.ServletContext;
 import java.util.Objects;
 
+/**
+ * POJO class which represent product in the store
+ */
+
 public class Item {
 
     private long productID;

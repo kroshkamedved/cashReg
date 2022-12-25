@@ -3,7 +3,9 @@ package com.elearn.fp.db.entity;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * POJO class which represent order in the store
+ */
 public class Order {
     private long id;
     private long cashierId;

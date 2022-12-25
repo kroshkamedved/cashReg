@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * WebFilter which filter unauthorized access. Identifies the user and determines access rights.
+ */
 @WebFilter(value = "/cabinet/*", dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD})
 public class AuthorizationFilter implements Filter {
     Logger logger = LogManager.getLogger(AuthorizationFilter.class);
