@@ -1,5 +1,6 @@
 package com.elearn.fp.controller;
 
+import com.elearn.fp.db.entity.Item;
 import com.elearn.fp.db.entity.Order;
 import com.elearn.fp.exception.AppException;
 import com.elearn.fp.exception.DBException;
@@ -15,19 +16,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
-@WebServlet("/cabinet/admin_page/zreport")
+@WebServlet({"/cabinet/admin_page/zreport", "/cabinet/admin_page/xreport"})
 public class ReportController extends HttpServlet {
     Logger logger = LogManager.getLogger(ReportController.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        boolean isZreport = true;
         Document document = new Document();
         try {
-            File report = new File("c:/projTmp/" + "z_report_" + LocalDate.now() + ".pdf");
+            if (req.getParameter("xreport") != null) {
+                isZreport = false;
+            }
+            File report = new File("projTmp/" + "report_" + LocalDate.now() + ".pdf");
             report.getParentFile().mkdirs();
             report.createNewFile();
             PdfWriter.getInstance(document, new FileOutputStream(report));
@@ -41,19 +47,38 @@ public class ReportController extends HttpServlet {
 
             com.itextpdf.text.List list = new com.itextpdf.text.List(true, 15);
 
-            for (Order order :
-                    todayOrders) {
-                list.add(new ListItem(order.toString()));
-            }
-            if (list.isEmpty()) {
-                document.add(chunk);
-            }
+            if (!todayOrders.isEmpty()) {
+                double sum = todayOrders.stream()
+                        .flatMap(s -> s.getOrderItems().stream())
+                        .mapToDouble(s -> s.getProductQuantity() * s.getProductPrice())
+                        .sum();
 
+                String totalIncome = String.format("Total income for %tF is %,.2f$", LocalDate.now(), sum);
+                chunk = new Chunk(totalIncome);
+
+                for (Order order : todayOrders) {
+                    list.add(new ListItem(order.toString()));
+                    com.itextpdf.text.List itemList = new com.itextpdf.text.List(true, 10);
+                    for (Item item : order.getOrderItems()) {
+                        itemList.add(item.toString());
+                    }
+                    double checkTotal = order.getOrderItems()
+                            .stream()
+                            .mapToDouble(s -> s.getProductPrice() * s.getProductQuantity())
+                            .sum();
+                    itemList.setNumbered(false);
+                    itemList.add("TOTAL CHECK SUM : " + checkTotal);
+                    list.add(itemList);
+                }
+            }
+            document.add(chunk);
             document.add(list);
             document.close();
 
             resp.setContentType("application/pdf");
-            resp.addHeader("Content-Disposition", "attachment; filename=" + report.getName());
+            if (isZreport) {
+                resp.addHeader("Content-Disposition", "attachment; filename=" + report.getName());
+            }
             resp.setContentLength((int) report.length());
 
             FileInputStream fileInputStream = new FileInputStream(report);

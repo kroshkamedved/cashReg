@@ -38,9 +38,15 @@ public class ProductManager {
     }
 
     DBManager dbManager;
+    List<Unit> unitList;
 
     private ProductManager() {
         dbManager = DBManager.getInstance();
+        try {
+            unitList = getUnitList();
+        } catch (DBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Item extractProduct(HttpServletRequest req) {
@@ -191,7 +197,7 @@ public class ProductManager {
         item.setProductPrice(rs.getDouble("price"));
         item.setProductUnitId(rs.getInt("units_id"));
         item.setProductQuantity(rs.getInt("quantity"));
-
+        item.setProductUnit(unitList.stream().filter(u -> u.getId() == item.getProductUnitId()).findFirst().get().getName());
         return item;
     }
 
@@ -203,7 +209,7 @@ public class ProductManager {
         item.setProductPrice(rs.getDouble("price"));
         item.setProductUnitId(rs.getInt("units_id"));
         item.setProductQuantity(rs.getInt("quantity"));
-
+        item.setProductUnit(unitList.stream().filter(u -> u.getId() == item.getProductUnitId()).findFirst().get().getName());
         return item;
     }
 
@@ -326,10 +332,9 @@ public class ProductManager {
             psIncreaseStock.executeUpdate();
 
             st = connection.createStatement();
-            rs = st.executeQuery("select count(*) as oiCount from order_items where order_id ="+ orderId);
+            rs = st.executeQuery("select count(*) as oiCount from order_items where order_id =" + orderId);
             rs.next();
-            if(rs.getInt(1) == 0)
-            {
+            if (rs.getInt(1) == 0) {
                 st.executeQuery("DELETE FROM orders where id =" + orderId);
             }
             connection.commit();

@@ -1,5 +1,7 @@
 package com.elearn.fp.db.entity;
 
+import javax.naming.Context;
+import javax.servlet.ServletContext;
 import java.util.Objects;
 
 public class Item {
@@ -94,14 +96,8 @@ public class Item {
 
     @Override
     public String toString() {
-        return "ItemDTO{" +
-                "productID=" + productID +
-                ", productName='" + productName + '\'' +
-                ", productDescription='" + productDescription + '\'' +
-                ", productQuantity=" + productQuantity +
-                ", productUnitId=" + productUnitId +
-                ", productPrice=" + productPrice +
-                ", productUnit='" + productUnit + '\'' +
-                '}';
+        return productName +
+                " : " + productQuantity + productUnit +
+                ", product price : " + productPrice + "$.";
     }
 }

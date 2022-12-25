@@ -10,7 +10,7 @@
     <%@include file="includes/head.jsp" %>
     <fmt:setLocale value="${loc}"/>
     <fmt:setBundle basename="language"/>
-    <title>TEMP CHECKS TITLE</title>
+    <title><fmt:message key="common.info.cabinet.checks"/></title>
 </head>
 <body>
 <c:choose>
@@ -25,20 +25,24 @@
             <form action="/fp/cabinet/cashier_page/checks" method="get">
                 </c:when>
                 </c:choose>
-                <select name="recordsPerPage">
+                <select style="margin-top: 25px" name="recordsPerPage">
                     <option selected>${recordsPerPage}</option>
                     <c:forEach begin="1" end="${orders.size()}"
                                var="k">
                         <option value="${k}">${k}</option>
                     </c:forEach>
                 </select>
-                <button type="submit">RecordsPerPage</button>
+                <button type="submit"><fmt:message key="common.info.cabinet.checks.recordsPerPage"/></button>
             </form>
             <c:if test="${usr.role eq UserRole.SENIOR_CASHIER}">
-                <form action="/fp/cabinet/admin_page/checks" method="get">
-                    <input type="date" name="checksForDate">
-                    <button type="submit">get orders</button>
-                </form>
+                <div style="margin-top: 25px">
+                    <form action="/fp/cabinet/admin_page/checks" method="get">
+                        <input type="date" name="checksForDate">
+                        <button type="submit">
+                            <fmt:message key="common.info.cabinet.checks.updateOrdersList"/>
+                        </button>
+                    </form>
+                </div>
             </c:if>
             <c:forEach var="order" items="${orders}" begin="${(page-1)*recordsPerPage}"
                        end="${((page-1)*recordsPerPage)+recordsPerPage-1}">
@@ -47,7 +51,7 @@
                     <tr>
                         <th>Order #${order.id}</th>
                         <c:if test="${usr.role eq UserRole.SENIOR_CASHIER}">
-                            <th>delete order ${order.id}</th>
+                            <th><fmt:message key="senior.cabinet.checks.action.deleteWholeOrder"/>${order.id}</th>
                         </c:if>
                     </tr>
                     </thead>
@@ -57,13 +61,13 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>Order ID</th>
-                                    <th>Cashier ID</th>
-                                    <th>Product name</th>
-                                    <th>Description</th>
-                                    <th>Units id</th>
-                                    <th>Price per unit</th>
-                                    <th><fmt:message key="common.info.cabinet.quantity"/></th>
+                                    <th scope="col"><fmt:message key="senior.cabinet.checks.orderId"/></th>
+                                    <th scope="col"><fmt:message key="senior.cabinet.checks.cashierId"/></th>
+                                    <th scope="col"><fmt:message key="commodity.info.cabinet.table.itemName"/></th>
+                                    <th scope="col"><fmt:message key="commodity.info.cabinet.table.description"/></th>
+                                    <th scope="col"><fmt:message key="commodity.info.cabinet.table.units"/></th>
+                                    <th scope="col"><fmt:message key="commodity.info.cabinet.table.pricePerUnit"/></th>
+                                    <th scope="col"><fmt:message key="common.info.cabinet.quantity"/></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -106,7 +110,7 @@
                 </table>
             </c:forEach>
             <div text-align : center>
-                <nav aria-label="Page navigation example">
+                <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-center">
                         <c:choose>
                             <c:when test="${page eq 1}">

@@ -44,11 +44,7 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", cashierId=" + cashierId +
-                ", datetime=" + datetime +
-                ", orderItems=" + orderItems +
-                '}';
+        return "Order#" + id +
+                ", cashier ID#" + cashierId + ", datetime : " + datetime + ", order items :";
     }
 }

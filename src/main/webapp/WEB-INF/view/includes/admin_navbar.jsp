@@ -1,7 +1,8 @@
 <conteiner>
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container">
-            <a class="navbar-brand" href="${app}/cabinet/admin_page">Senior cashier cabinet</a>
+            <a class="navbar-brand" href="${app}/cabinet/admin_page"><fmt:message
+                    key="senior.cabinet.common.header"/></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,19 +34,23 @@
                         <!--a class="nav-link active" aria-current="page" href="index.jsp">Home</a!-->
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="${app}/cabinet/admin_page/checks">Checks</a>
+                        <a class="nav-link" aria-current="page" href="${app}/cabinet/admin_page/checks"><fmt:message
+                                key="common.info.cabinet.checks"/> </a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                            aria-expanded="false">
-                            Reports
+                            <fmt:message key="common.info.cabinet.reports"/>
                         </a>
                         <ul class="dropdown-menu">
                             <c:url var="z_report" value="/controller">
                                 <c:param name="command" value="zReport"></c:param>
                             </c:url>
+                            <c:url var="x_report" value="/controller">
+                                <c:param name="command" value="xReport"></c:param>
+                            </c:url>
                             <li><a class="dropdown-item" href="${z_report}">"Z" Reports</a></li>
-                            <li><a class="dropdown-item" href="x_report.jsp">"X" Reports</a></li>
+                            <li><a class="dropdown-item" href="${x_report}">"X" Reports</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">

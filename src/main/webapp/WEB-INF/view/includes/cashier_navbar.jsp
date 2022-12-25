@@ -1,7 +1,7 @@
 <conteiner>
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container">
-            <a class="navbar-brand" href="${app}/cabinet/cashier_page">Cashier cabinet</a>
+            <a class="navbar-brand" href="${app}/cabinet/cashier_page"><fmt:message key="cashier.cart.info.header"/> </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@
                         <!--a class="nav-link active" aria-current="page" href="index.jsp">Home</a!-->
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="${app}/cabinet/cashier_page/checks">Checks</a>
+                        <a class="nav-link" aria-current="page" href="${app}/cabinet/cashier_page/checks"><fmt:message key="common.info.cabinet.checks"/> </a>
                     </li>
 
                     <li class="nav-item">

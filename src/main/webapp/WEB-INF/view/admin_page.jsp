@@ -4,15 +4,15 @@
 
 <html>
 <head>
-    <title>Admin page</title>
     <%@include file="includes/head.jsp" %>
     <jsp:useBean id="loc" scope="session" type="java.lang.String"/>
     <fmt:setLocale value="${loc}"/>
     <fmt:setBundle basename="language"/>
+    <title><fmt:message key="senior.cabinet.common.header"/> </title>
 </head>
 <body>
 <%@include file="includes/admin_navbar.jsp" %>
-<h1 align="center">
+<h1 style= text-align:center;margin:100px>
     <fmt:message key="common.info.cabinet.greetings"/>, ${usr.role} ${usr.login}
     <br>
 
