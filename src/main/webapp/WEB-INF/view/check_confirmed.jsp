@@ -4,7 +4,6 @@
 <html>
 <head>
     <%@include file="includes/head.jsp" %>
-    <jsp:useBean id="loc" scope="session" type="java.lang.String"/>
     <fmt:setLocale value="${loc}"/>
     <fmt:setBundle basename="language"/>
     <title>CHECK CONFIRMED</title>

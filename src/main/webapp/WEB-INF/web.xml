@@ -40,7 +40,7 @@
     <jsp-config>
         <taglib>
             <taglib-uri>myTaglib</taglib-uri>
-            <taglib-location>/WEB-INF/jstl/myTaglib.tld</taglib-location>
+            <taglib-location>/WEB-INF/tags/myTaglib.tld</taglib-location>
         </taglib>
     </jsp-config>
 

@@ -3,26 +3,21 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="my" uri="myTaglib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="hi" tagdir="/WEB-INF/tags" %>
 <html>
 <head>
     <script type="text/javascript" src="${app}/js/index.js"></script>
     <title>Commodity expert page</title>
     <%@include file="includes/head.jsp" %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <jsp:useBean id="loc" scope="session" type="java.lang.String" class="java.lang.String"/>
     <fmt:setLocale value="${loc}"/>
     <fmt:setBundle basename="language"/>
-
 </head>
 <body>
 <%@include file="includes/cashier_navbar.jsp" %>
 <input type="hidden" name="allGoods" value="${allGoods}">
-<div class="container" style="padding: 50px 100px 100px 100px">
-    <h1 align="center">
-        <fmt:message key="common.info.cabinet.greetings"/>, ${usr.role} ${usr.login}
-        <br>
-        <hr>
-    </h1>
+<div class="container" >
+    <hi:greetings/>
     <form autocomplete="off" action="/fp/controller" method="post">
         <input name="command" value="addProductToCart" type="hidden">
         <fieldset style="display: table-column; width: 100%">
