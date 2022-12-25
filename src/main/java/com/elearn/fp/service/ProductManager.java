@@ -5,6 +5,7 @@ import com.elearn.fp.exception.DBException;
 import com.elearn.fp.db.entity.Unit;
 import com.elearn.fp.db.utils.DBManager;
 import com.elearn.fp.db.utils.JdbcUtils;
+import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,6 +14,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProductManager {
 
@@ -88,6 +90,10 @@ public class ProductManager {
             insertToWarehouseStmnt.executeUpdate();
 
             connection.commit();
+
+            List<Item> allGoods = getAllGoods();
+            String json = new Gson().toJson(allGoods.stream().map(item -> item.getProductName()).collect(Collectors.toList()));
+            request.getServletContext().setAttribute("allGoods", json);
             request.getSession().setAttribute("product", product);
 
         } catch (SQLException x) {
