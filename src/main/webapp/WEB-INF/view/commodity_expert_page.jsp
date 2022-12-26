@@ -40,7 +40,8 @@
                             </div>
                             <div class="form-group" style="margin: 10px">
                                 <label><fmt:message key="common.info.cabinet.productName"/></label>
-                                <input type="text" class="form-control" id="prod_name" name="prod_name" placeholder="*0-9a-zA-Zа-яА-Я*" required>
+                                <input type="text" class="form-control" id="prod_identifier" name="prod_name"
+                                       placeholder="*0-9a-zA-Zа-яА-Я*" required>
                             </div>
                             <div class="form-group" style="margin: 10px">
                                 <label>Product description</label>
@@ -53,11 +54,11 @@
                             </div>
                             <div class="form-group" style="margin: 10px">
                                 <label>Product price per unit</label>
-                                <input type="number" class="form-control" step="0.01" min="0.1"name="product_price"
+                                <input type="number" class="form-control" step="0.01" min="0.1" name="product_price"
                                        placeholder="*product price*" required>
                             </div>
-                            <div class="form-group" style="margin: 10px;text-align: center" >
-                                <button type="submit" class="btn btn-success" onclick="return validate()">
+                            <div class="form-group" style="margin: 10px;text-align: center">
+                                <button type="submit" class="btn btn-success" onclick="return empty()">
                                     <fmt:message key="commodity.actions.createProduct"/>
                                 </button>
                             </div>

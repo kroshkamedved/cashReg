@@ -11,8 +11,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static com.elearn.fp.db.query.Query.*;
+
 public class UserManager {
-    private static final String FIND_USER_BY_NAME = "select * from users where name=? AND pass_hash=?";
+
     private static UserManager instance;
 
     public static synchronized UserManager getInstance() {
@@ -37,7 +39,7 @@ public class UserManager {
         }
     }
 
-     static User extractUser(ResultSet rs) throws SQLException {
+    static User extractUser(ResultSet rs) throws SQLException {
         User user = new User();
         user.setId(rs.getInt("id"));
         user.setLogin(rs.getString("name"));
@@ -59,7 +61,7 @@ public class UserManager {
                 return extractUser(rs);
             }
         } finally {
-            JdbcUtils.closeClosable(prpst, rs);
+            JdbcUtils.closeClosable(rs, prpst);
         }
         return null;
     }

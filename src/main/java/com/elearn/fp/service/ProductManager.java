@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static com.elearn.fp.db.query.Query.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,15 +22,6 @@ public class ProductManager {
 
     private static ProductManager instance;
 
-    private final String INSERT_STATEMENT_SQL = "insert into goods(name,description,price, units_id) VALUES (?, ?, ?,?)";
-    private final String INSERT_TO_WAREHOUSE_SQL = "insert into warehouse(product_id,quantity) VALUES (?, ?)";
-    private final String UPDATE_ITEM_STOCK_SQL = "UPDATE warehouse SET QUANTITY = ? where product_id = ? ";
-    private final String UPDATE_ITEM_STOCK_AFTER_PURCHASE = "UPDATE warehouse SET QUANTITY = (QUANTITY - ?) where product_id = ? ";
-    private final String DELETE_ITEM_FROM_STOCK = "DELETE FROM goods WHERE ID = ? ";
-    private final String SELECT_ALL_GOODS = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id";
-    private final String SELECT_ITEM_DTO = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id where gd.id = ? or gd.name = ?";
-    private final String COUNT_ALL_GOODS = "SELECT COUNT(*) as quantity FROM goods";
-    private final String SELECT_GOODS_WITH_LIMIT = "SELECT * FROM goods gd join warehouse wh on gd.id = wh.product_id ORDER BY name ASC LIMIT ? offset ?";
 
     private Logger logger = LogManager.getLogger(ProductManager.class);
 
@@ -70,13 +63,12 @@ public class ProductManager {
             connection = dbManager.getConnection();
             connection.setAutoCommit(false);
 
-            insertProductStmnt = dbManager.getConnection().prepareStatement(INSERT_STATEMENT_SQL, Statement.RETURN_GENERATED_KEYS);
+            insertProductStmnt = connection.prepareStatement(INSERT_STATEMENT_SQL, Statement.RETURN_GENERATED_KEYS);
             insertProductStmnt.setString(1, product.getProductName());
             insertProductStmnt.setString(2, product.getProductDescription());
             insertProductStmnt.setDouble(3, product.getProductPrice());
             insertProductStmnt.setInt(4, product.getProductUnitId());
             insertProductStmnt.executeUpdate();
-
 
             resultSet = insertProductStmnt.getGeneratedKeys();
 
@@ -90,12 +82,8 @@ public class ProductManager {
             insertToWarehouseStmnt.executeUpdate();
 
             connection.commit();
-
-            List<Item> allGoods = getAllGoods();
-            String json = new Gson().toJson(allGoods.stream().map(item -> item.getProductName()).collect(Collectors.toList()));
-            request.getServletContext().setAttribute("allGoods", json);
+            updateAllGoods(request);
             request.getSession().setAttribute("product", product);
-
         } catch (SQLException x) {
             try {
                 if (connection != null) {
@@ -111,18 +99,21 @@ public class ProductManager {
         }
     }
 
+    private void updateAllGoods(HttpServletRequest request) throws DBException {
+        List<Item> allGoods = getAllGoods();
+        String json = new Gson().toJson(allGoods.stream().map(item -> item.getProductName()).collect(Collectors.toList()));
+        request.getServletContext().setAttribute("allGoods", json);
+    }
+
     public void updateProductAfterPurchase(HttpServletRequest req) throws DBException {
         Connection connection = null;
         PreparedStatement updateItemStock = null;
         try {
             connection = dbManager.getConnection();
-
-            updateItemStock = dbManager.getConnection().prepareStatement(UPDATE_ITEM_STOCK_SQL);
+            updateItemStock = connection.prepareStatement(UPDATE_ITEM_STOCK_SQL);
             updateItemStock.setInt(1, Integer.parseInt(req.getParameter("newStock")));
             updateItemStock.setInt(2, Integer.parseInt(req.getParameter("productId")));
             updateItemStock.executeUpdate();
-
-
         } catch (SQLException e) {
             logger.error("cannot update product stock");
             throw new DBException("cannot update product stock", e);
@@ -136,12 +127,10 @@ public class ProductManager {
         PreparedStatement updateItemStock = null;
         try {
             connection = dbManager.getConnection();
-
             updateItemStock = connection.prepareStatement(UPDATE_ITEM_STOCK_AFTER_PURCHASE);
             updateItemStock.setInt(1, newStock);
             updateItemStock.setLong(2, id);
             updateItemStock.executeUpdate();
-
         } catch (SQLException e) {
             logger.error("cannot update product stock");
             throw new DBException("cannot update product stock", e);
@@ -157,12 +146,9 @@ public class ProductManager {
 
         try {
             connection = dbManager.getConnection();
-
-            deleteItem = dbManager.getConnection().prepareStatement(DELETE_ITEM_FROM_STOCK);
+            deleteItem = connection.prepareStatement(DELETE_ITEM_FROM_STOCK);
             deleteItem.setInt(1, Integer.parseInt(req.getParameter("deleteItemId")));
             deleteItem.executeUpdate();
-
-
         } catch (SQLException e) {
             logger.error("cannot delete product from stock");
             throw new DBException("cannot delete product from stock", e);
@@ -181,7 +167,6 @@ public class ProductManager {
             connection = dbManager.getConnection();
             statement = connection.createStatement();
             rs = statement.executeQuery(SELECT_ALL_GOODS);
-
             while (rs.next()) {
                 itemList.add(extractItemFromGoodsTable(rs));
             }
@@ -203,7 +188,12 @@ public class ProductManager {
         item.setProductPrice(rs.getDouble("price"));
         item.setProductUnitId(rs.getInt("units_id"));
         item.setProductQuantity(rs.getInt("quantity"));
-        item.setProductUnit(unitList.stream().filter(u -> u.getId() == item.getProductUnitId()).findFirst().get().getName());
+        item.setProductUnit(unitList
+                .stream()
+                .filter(u -> u.getId() == item.getProductUnitId())
+                .findFirst()
+                .get()
+                .getName());
         return item;
     }
 
@@ -215,7 +205,12 @@ public class ProductManager {
         item.setProductPrice(rs.getDouble("price"));
         item.setProductUnitId(rs.getInt("units_id"));
         item.setProductQuantity(rs.getInt("quantity"));
-        item.setProductUnit(unitList.stream().filter(u -> u.getId() == item.getProductUnitId()).findFirst().get().getName());
+        item.setProductUnit(unitList.
+                stream()
+                .filter(u -> u.getId() == item.getProductUnitId()).
+                findFirst()
+                .get()
+                .getName());
         return item;
     }
 
@@ -353,7 +348,7 @@ public class ProductManager {
             logger.error("cannot delete Item From Order");
             throw new DBException("cannot delete Item From Order", e);
         } finally {
-            JdbcUtils.closeClosable(psIncreaseStock, ps, connection);
+            JdbcUtils.closeClosable(psIncreaseStock, st, ps, connection);
         }
         logger.trace("product successfully deleted from order");
     }

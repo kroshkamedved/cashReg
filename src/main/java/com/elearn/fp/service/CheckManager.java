@@ -10,6 +10,8 @@ import com.elearn.fp.db.utils.JdbcUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static com.elearn.fp.db.query.Query.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
 import java.util.*;
@@ -17,44 +19,6 @@ import java.util.Date;
 
 public class CheckManager {
     private Logger logger = LogManager.getLogger(CheckManager.class);
-
-    private final String SELECT_GOODS_WITH_LIMIT = "select o.id, o.date, o.created_by, oi.product_id, oi.product_name, g.description, oi.quantity, g.price, g.units_id from order_items oi join orders o on o.id = oi.order_id join goods g on oi.product_id = g.id and o.created_by = 11 and cast(o.date as  date) = current_date() order by o.id desc LIMIT ? offset ?";
-
-    private static final String INSERT_INTO_ORDER_ITEMS = "insert into order_items " +
-            "(order_id,product_id, product_name,quantity)" +
-            " values (?,?,?,?)";
-    private static final String SELECT_CHECKS_FOR_CASHIER = "select * from order_items oi " +
-            "                                                       join orders o on o.id = oi.order_id" +
-            "                                                        join goods g on oi.product_id = g.id " +
-            "                                                           and o.created_by = ? " +
-            "                                                           and cast(o.date as  date) = current_date()" +
-            "                                                       order by o.id asc";
-    private static final String SELECT_CHECKS_FOR_SENIOR_CASHIER = "select o.id, o.date, o.created_by, oi.product_id, oi.product_name, g.description, oi.quantity, g.price, g.units_id" +
-            " from order_items oi" +
-            "                                                                join orders o on o.id = oi.order_id " +
-            "                                                                join goods g on oi.product_id = g.id" +
-            "                                                                and cast(o.date as  date) = curdate()" +
-            "                                                                order by o.id asc";/*+
-            "                                                                LIMIT ? offset ?";*/
-    private static final String SELECT_CHECKS_FOR_SENIOR_CASHIER_WITH_DATE = "select o.id, o.date, o.created_by, oi.product_id, oi.product_name, g.description, oi.quantity, g.price, g.units_id" +
-            "                                                                   from order_items oi" +
-            "                                                                       join orders o on o.id = oi.order_id " +
-            "                                                                       join goods g on oi.product_id = g.id" +
-            "                                                                   and cast(o.date as  date) like ?" +
-            "                                                                   order by o.id asc";/*+
-            "                                                                LIMIT ? offset ?";*/
-    private final String INSERT_INTO_ORDERS = "Insert into orders (date,created_by) VALUES (?,?)";
-
-    private final String COUNT_ALL_ORDERS = "SELECT COUNT(*) as quantity, curdate() as currentDate" +
-            "  FROM orders o " +
-            "where cast(o.date as DATE) = curdate();";
-    private final String COUNT_ALL_ORDERS_FROM_DATE = "SELECT COUNT(*) as quantity" +
-            "  FROM orders o " +
-            "where cast(o.date as DATE) LIKE ";
-    private final String COUNT_ALL_ORDERS_FROM_DATE_FOR_CASHIER = "SELECT COUNT(*) as quantity " +
-            " FROM orders o " +
-            "where cast(o.date as DATE) = curdate() AND created_by = ?";
-
     private static CheckManager instance;
 
     public static synchronized CheckManager getInstance() {
@@ -69,11 +33,12 @@ public class CheckManager {
     private CheckManager() {
         dbManager = DBManager.getInstance();
     }
+
     /**
      * confirm check and update database
      *
      * @param request as HttpServletRequest
-     * @param goods as HashMap(item,itemQuantity)
+     * @param goods   as HashMap(item,itemQuantity)
      * @throws DBException when cannot confirm check
      */
     public void confirmCheck(HttpServletRequest request, HashMap<Item, Integer> goods) throws DBException {
@@ -124,7 +89,7 @@ public class CheckManager {
         }
     }
 
-    public void prepareChecksForView(User usr, HttpServletRequest req, int page, int recordsPerPage) throws DBException {
+    public List<Order> prepareChecksForView(User usr, HttpServletRequest req, int recordsPerPage) throws DBException {
         UserRole currentRole = usr.getRole();
         Connection connection = null;
         Statement st = null;
@@ -136,11 +101,11 @@ public class CheckManager {
             st = connection.createStatement();
             String date = req.getParameter("checksForDate");
             if (date == null && req.getSession().getAttribute("orders") != null) {
-                   List orders = (List) req.getSession().getAttribute("orders");
-                   int ordersQuantity = orders.size();
-                   int noOfPages = (int) Math.ceil(ordersQuantity * 1.0 / recordsPerPage);
-                   req.getSession().setAttribute("noOfPages", noOfPages);
-                   return;
+                List orders = (List) req.getSession().getAttribute("orders");
+                int ordersQuantity = orders.size();
+                int noOfPages = (int) Math.ceil(ordersQuantity * 1.0 / recordsPerPage);
+                req.getSession().setAttribute("noOfPages", noOfPages);
+                return orders;
             }
             if (date == null) {
                 rsOrderQuantity = st.executeQuery(" select curdate()");
@@ -148,7 +113,7 @@ public class CheckManager {
                 date = rsOrderQuantity.getString(1);
             }
             req.getSession().setAttribute("date", date);
-            rsOrderQuantity = getOrders(req,prepStat,connection,usr,date);
+            rsOrderQuantity = getOrders(req, prepStat, connection, usr, date);
             rsOrderQuantity.next();
             int ordersQuantity = rsOrderQuantity.getInt("quantity");
             int noOfPages = (int) Math.ceil(ordersQuantity * 1.0 / recordsPerPage);
@@ -174,7 +139,7 @@ public class CheckManager {
             }
             rs = prepStat.executeQuery();
             List<Order> orders = extractOrders(rs);
-            req.getSession().setAttribute("orders", orders);
+            return orders;
         } catch (SQLException e) {
             logger.error("cannot do showChecks", e);
             throw new DBException("cannot do showChecks", e);
@@ -185,6 +150,7 @@ public class CheckManager {
 
     /**
      * Return orders for user request
+     *
      * @param request
      * @param prepStat
      * @param connection
@@ -193,9 +159,8 @@ public class CheckManager {
      * @throws SQLException if something went wrong during prepared statement execution
      */
     private ResultSet getOrders(HttpServletRequest request, PreparedStatement prepStat, Connection connection, User usr, String date) throws SQLException {
-        switch (usr.getRole()){
-            case CASHIER :
-            {
+        switch (usr.getRole()) {
+            case CASHIER: {
                 request.getSession().setAttribute("rolePage", "cashier_page");
                 prepStat = connection.prepareStatement(COUNT_ALL_ORDERS_FROM_DATE_FOR_CASHIER);
                 prepStat.setLong(1, usr.getId());
@@ -211,6 +176,13 @@ public class CheckManager {
         return rs;
     }
 
+    /**
+     * extract orders from resulSet and return List<Order>
+     *
+     * @param rs
+     * @return List<Order>
+     * @throws SQLException
+     */
     private List<Order> extractOrders(ResultSet rs) throws SQLException {
         Map<Long, Order> orders = new HashMap<>();
         Item item;
@@ -233,6 +205,13 @@ public class CheckManager {
         return list;
     }
 
+    /**
+     * return today orders. Default method for check controller without date parameter in the request
+     *
+     * @param request
+     * @return List<Order>
+     * @throws DBException
+     */
     public List<Order> getTodayChecks(HttpServletRequest request) throws DBException {
         Connection connection = null;
 

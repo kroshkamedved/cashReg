@@ -1,5 +1,6 @@
 package com.elearn.fp.controller;
 
+import com.elearn.fp.db.entity.Order;
 import com.elearn.fp.exception.DBException;
 import com.elearn.fp.db.entity.User;
 import com.elearn.fp.service.CheckManager;
@@ -12,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+
 /**
  * Servlet for check page
  */
@@ -45,7 +48,8 @@ public class ChecksController extends HttpServlet {
                         ? (int) req.getSession().getAttribute("page")
                         : 1;
                 req.setAttribute("page", page);
-                checkManager.prepareChecksForView(usr, req, page, recordsPerPage);
+                List<Order> orders = checkManager.prepareChecksForView(usr, req, recordsPerPage);
+                req.getSession().setAttribute("orders", orders);
             }
         } catch (DBException e) {
             path = req.getServletContext().getAttribute("app") + "/error.jsp";
