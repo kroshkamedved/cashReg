@@ -2,8 +2,9 @@ package com.elearn.fp.service;
 
 import com.elearn.fp.db.entity.User;
 import com.elearn.fp.db.entity.UserRole;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.elearn.fp.db.utils.TestConnectionManager;
+import com.elearn.fp.exception.DBException;
+import org.junit.jupiter.api.*;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -22,7 +23,6 @@ class UserManagerTest {
     private User user;
     private ResultSet rs;
 
-
     @BeforeEach
     void init() throws SQLException {
         user = new User();
@@ -38,13 +38,17 @@ class UserManagerTest {
         when(rs.getString("role")).thenReturn(UserRole.CASHIER.name());
     }
 
-    @Test
-    void testFindUser() throws SQLException, NamingException {
 
+    @DisplayName("test User extraction from resul set")
+    @Test
+    void testExtractUser() throws SQLException {
+        assertEquals(user, UserManager.extractUser(rs));
     }
 
     @Test
-    void testExtractUser() throws SQLException {
-        assertEquals(user,UserManager.extractUser(rs));
+    void testHashPassword() {
+        String expected = "passhash1991";
+        String pass = "1991";
+        Assertions.assertEquals(expected, UserManager.hashPass(pass));
     }
 }

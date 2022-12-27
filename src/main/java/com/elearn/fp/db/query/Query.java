@@ -4,6 +4,10 @@ public class Query {
     private Query() {
     }
 
+    public static final String DELETE_ITEM_FROM_ORDER = "delete from order_items where order_id = ? and product_id = ?";
+    public static final String COUNT_ORDER_ITEMS = "select count(*) as oiCount from order_items where order_id =";
+    public static final String DELETE_ORDER_WITH_ID = "DELETE FROM orders where id =";
+    public static final String UDPATE_WAREHOUSE_AFTER_ITEM_DELETED_FROM_ORDER = "UPDATE warehouse SET quantity = (quantity + ?) WHERE product_id  = ?";
     public static final String INSERT_INTO_ORDER_ITEMS = "insert into order_items " +
             "(order_id,product_id, product_name,quantity)" +
             " values (?,?,?,?)";

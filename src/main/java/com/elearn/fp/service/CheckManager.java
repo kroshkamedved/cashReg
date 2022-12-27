@@ -72,7 +72,7 @@ public class CheckManager {
                 insertToOrderItems.executeUpdate();
                 ProductManager productManager = ProductManager.getInstance();
                 synchronized (productManager) {
-                    productManager.updateProductAfterPurchase(connection, entry.getKey().getProductID(), entry.getValue());
+                    productManager.updateProductAfterPurchase(entry.getKey().getProductID(), entry.getValue());
                 }
             }
             connection.commit();

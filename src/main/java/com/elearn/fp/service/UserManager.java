@@ -1,10 +1,13 @@
 package com.elearn.fp.service;
 
+import com.elearn.fp.db.dao.UserDAO;
 import com.elearn.fp.db.utils.JdbcUtils;
 import com.elearn.fp.exception.DBException;
 import com.elearn.fp.db.entity.UserRole;
 import com.elearn.fp.db.utils.DBManager;
 import com.elearn.fp.db.entity.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,8 +16,12 @@ import java.sql.SQLException;
 
 import static com.elearn.fp.db.query.Query.*;
 
+/**
+ * Service class, used for convenient way of dealing with model
+ */
 public class UserManager {
 
+    Logger logger = LogManager.getLogger(UserManager.class);
     private static UserManager instance;
 
     public static synchronized UserManager getInstance() {
@@ -24,22 +31,38 @@ public class UserManager {
         return instance;
     }
 
-    DBManager dbManager;
+    private UserDAO userDAO;
 
     private UserManager() {
-        dbManager = DBManager.getInstance();
+        userDAO = new UserDAO();
     }
 
+    /**
+     * prepare credentials for dao request and return User
+     *
+     * @param login
+     * @param password
+     * @return
+     * @throws DBException
+     */
     public User findUser(String login, String password) throws DBException {
-        try (Connection con = dbManager.getConnection()) {
-            return findUser(con, login, password);
+        try {
+            String hashedPass = hashPass(password);
+            return userDAO.getUser(login, hashedPass);
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            logger.trace("Cannot find user");
             throw new DBException("Cannot find user", ex);
         }
     }
 
-    static User extractUser(ResultSet rs) throws SQLException {
+    /**
+     * extract User from the ResulSet obtained from SQL query
+     *
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    public static User extractUser(ResultSet rs) throws SQLException {
         User user = new User();
         user.setId(rs.getInt("id"));
         user.setLogin(rs.getString("name"));
@@ -48,25 +71,15 @@ public class UserManager {
         return user;
     }
 
-    public User findUser(Connection con, String login, String password) throws SQLException {
-        PreparedStatement prpst = null;
-        ResultSet rs = null;
-        try {
-            prpst = con.prepareStatement(FIND_USER_BY_NAME);
-            prpst.setString(1, login);
-            prpst.setString(2, hashPass(password));
-
-            rs = prpst.executeQuery();
-            if (rs.next()) {
-                return extractUser(rs);
-            }
-        } finally {
-            JdbcUtils.closeClosable(rs, prpst);
-        }
-        return null;
-    }
-
-    private static String hashPass(String password) {
+    /**
+     * imitation of real hashing algorithm.
+     * Exist for a purpose of safe data storage
+     *
+     * @param password
+     * @return
+     */
+    public static String hashPass(String password) {
         return "passhash" + password;
     }
+
 }
