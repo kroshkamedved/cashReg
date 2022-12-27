@@ -41,7 +41,7 @@ public class ReportController extends HttpServlet {
             report.createNewFile();
             PdfWriter.getInstance(document, new FileOutputStream(report));
             document.open();
-            List<Order> todayOrders = CheckManager.getInstance().getTodayChecks(req);
+            List<Order> todayOrders = CheckManager.getInstance().getTodayChecks();
 
             Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
 
