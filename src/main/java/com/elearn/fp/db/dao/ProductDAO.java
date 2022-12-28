@@ -8,7 +8,6 @@ import com.elearn.fp.exception.DBException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +31,12 @@ public class ProductDAO {
         }
     }
 
+    /**
+     * Put newly created product to db
+     *
+     * @param product
+     * @throws DBException
+     */
     public void createProduct(Item product) throws DBException {
         Connection connection = null;
         PreparedStatement insertProductStmnt = null;
@@ -76,6 +81,12 @@ public class ProductDAO {
         }
     }
 
+    /**
+     * return List of measurements units in our DB
+     *
+     * @return
+     * @throws DBException
+     */
     public List<Unit> getUnitList() throws DBException {
         List<Unit> listCategory = new ArrayList<>();
         Statement statement = null;
@@ -103,6 +114,13 @@ public class ProductDAO {
         return listCategory;
     }
 
+    /**
+     * update stock item quantity after product was sold.
+     *
+     * @param newStock
+     * @param productId
+     * @throws DBException
+     */
     public void updateProductAfterPurchase(int newStock, long productId) throws DBException {
         Connection connection = null;
         PreparedStatement updateItemStock = null;
@@ -121,6 +139,12 @@ public class ProductDAO {
         logger.trace("product successfully updated");
     }
 
+    /**
+     * Delete product from DB
+     *
+     * @param id product ID
+     * @throws DBException when cannot delete product or product was sold at least once.
+     */
     public void deleteProduct(long id) throws DBException {
         Connection connection = null;
         PreparedStatement deleteItem = null;
@@ -139,6 +163,12 @@ public class ProductDAO {
         logger.trace("product successfully deleted");
     }
 
+    /**
+     * return List with all products from DB.
+     *
+     * @return List<Item>
+     * @throws DBException
+     */
     public List<Item> getAllGoods() throws DBException {
         Connection connection = null;
         Statement statement = null;
@@ -161,6 +191,15 @@ public class ProductDAO {
         return itemList;
     }
 
+    /**
+     * Return some goods for paginated view.
+     * Every request return products in quantity needed for one concrete page representation.
+     *
+     * @param page
+     * @param recordsPerPage
+     * @return
+     * @throws DBException
+     */
     public List<Item> getGoods(int page, int recordsPerPage) throws DBException {
         Connection connection = null;
         Statement st = null;
@@ -186,6 +225,13 @@ public class ProductDAO {
         return itemList;
     }
 
+    /**
+     * return number of pages, which needed for representation with current records per page value
+     *
+     * @param recordsPerPage
+     * @return
+     * @throws DBException
+     */
     public int getNumberOfPage(int recordsPerPage) throws DBException {
         Connection connection = null;
         Statement st = null;
@@ -204,13 +250,20 @@ public class ProductDAO {
         }
     }
 
+    /**
+     * Get all necessary info from db and put product to the shopping cart
+     *
+     * @param identifier
+     * @param cart
+     * @throws DBException
+     */
     public void addProductToCart(String identifier, HashMap<Item, Integer> cart) throws DBException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             connection = dbManager.getConnection();
-            ps = connection.prepareStatement(SELECT_ITEM_DTO);
+            ps = connection.prepareStatement(SELECT_ITEM);
             try {
                 ps.setInt(1, Integer.parseInt(identifier));
             } catch (Exception e) {
@@ -232,6 +285,14 @@ public class ProductDAO {
         logger.trace("product successfully added to cart");
     }
 
+    /**
+     * Delete item from existing order.
+     *
+     * @param orderId         order id
+     * @param deleteItemId    item id
+     * @param productQuantity quantity of items in the order
+     * @throws DBException
+     */
     public void deleteItemFromOrder(long orderId, long deleteItemId, int productQuantity) throws DBException {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -275,6 +336,12 @@ public class ProductDAO {
         logger.trace("product successfully deleted from order");
     }
 
+    /**
+     * Delete existing order from DB.
+     *
+     * @param deleteOrderId
+     * @throws DBException
+     */
     public void deleteWholeOrder(long deleteOrderId) throws DBException {
         Connection connection = null;
         PreparedStatement ps = null;

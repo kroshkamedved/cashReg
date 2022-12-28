@@ -49,7 +49,7 @@ public class Query {
     public static final String UPDATE_ITEM_STOCK_AFTER_PURCHASE = "UPDATE warehouse SET QUANTITY = (QUANTITY - ?) where product_id = ? ";
     public static final String DELETE_ITEM_FROM_STOCK = "DELETE FROM goods WHERE ID = ? ";
     public static final String SELECT_ALL_GOODS = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id";
-    public static final String SELECT_ITEM_DTO = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id where gd.id = ? or gd.name = ?";
+    public static final String SELECT_ITEM = "SELECT * FROM epam_project_db.goods gd join warehouse wh on gd.id = wh.product_id where gd.id = ? or gd.name = ?";
     public static final String COUNT_ALL_GOODS = "SELECT COUNT(*) as quantity FROM goods";
     public static final String SELECT_GOODS_WITH_LIMIT = "SELECT * FROM goods gd join warehouse wh on gd.id = wh.product_id ORDER BY name ASC LIMIT ? offset ?";
 

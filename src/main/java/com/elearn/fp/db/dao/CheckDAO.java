@@ -35,6 +35,14 @@ public class CheckDAO {
         }
     }
 
+    /**
+     * Confirm order and put order info to the DB
+     *
+     * @param usr   User
+     * @param goods Order items
+     * @return
+     * @throws DBException
+     */
 
     public long confirmCheck(User usr, HashMap<Item, Integer> goods) throws DBException {
         Connection connection = null;
@@ -141,7 +149,12 @@ public class CheckDAO {
         }
     }
 
-
+    /**
+     * return current date from db
+     *
+     * @return
+     * @throws DBException
+     */
     public String getCurrentDate() throws DBException {
         Connection connection = null;
         Statement st = null;
@@ -157,9 +170,17 @@ public class CheckDAO {
         } finally {
             JdbcUtils.closeClosable(rsOrderQuantity, st, connection);
         }
-
     }
 
+    /**
+     * return order quantity for current User request to servlet.
+     * Needed for correct pagination
+     *
+     * @param usr
+     * @param date
+     * @return
+     * @throws DBException
+     */
     public int getOrderQuantity(User usr, String date) throws DBException {
         Connection connection = null;
         PreparedStatement prepStat = null;

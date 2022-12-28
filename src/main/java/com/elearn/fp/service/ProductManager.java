@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class ProductManager {
 
     private static ProductManager instance;
-    private static List<Unit> unitList;
+    public static List<Unit> unitList;
 
     private Logger logger = LogManager.getLogger(ProductManager.class);
 
@@ -48,6 +48,12 @@ public class ProductManager {
         }
     }
 
+    /**
+     * Static util method for Item extraction from user request
+     *
+     * @param req
+     * @return
+     */
     public static Item extractProduct(HttpServletRequest req) {
         String productName = req.getParameter("prod_name");
         String productDescription = req.getParameter("description");
@@ -57,6 +63,12 @@ public class ProductManager {
         return new Item(productName, productDescription, productQuantity, productUnitId, productPrice);
     }
 
+    /**
+     * Create new product
+     *
+     * @param request
+     * @throws DBException
+     */
     public void createProduct(HttpServletRequest request) throws DBException {
         Item product = extractProduct(request);
         productDAO.createProduct(product);
@@ -64,12 +76,24 @@ public class ProductManager {
         request.getSession().setAttribute("product", product);
     }
 
+    /**
+     * Update servlet context attribute "allGoods" with relevant product list from DB.
+     *
+     * @param request
+     * @throws DBException
+     */
     private void updateAllGoods(HttpServletRequest request) throws DBException {
         List<Item> allGoods = getAllGoods();
         String json = new Gson().toJson(allGoods.stream().map(item -> item.getProductName()).collect(Collectors.toList()));
         request.getServletContext().setAttribute("allGoods", json);
     }
 
+    /**
+     * Method decreases ordered product stock quantity
+     *
+     * @param req
+     * @throws DBException
+     */
     public void updateProductAfterPurchase(HttpServletRequest req) throws DBException {
         int newStock = Integer.parseInt(req.getParameter("newStock"));
         long productId = parseLong(req.getParameter("productId"));
@@ -80,16 +104,35 @@ public class ProductManager {
         productDAO.updateProductAfterPurchase(newStock, productId);
     }
 
+    /**
+     * delete product from DB
+     *
+     * @param req
+     * @throws DBException
+     */
     public void deleteProduct(HttpServletRequest req) throws DBException {
         long itemId = parseLong(req.getParameter("deleteItemId"));
         productDAO.deleteProduct(itemId);
     }
 
+    /**
+     * return all products from DB
+     *
+     * @return
+     * @throws DBException
+     */
     public List<Item> getAllGoods() throws DBException {
         List<Item> itemList = productDAO.getAllGoods();
         return itemList;
     }
 
+    /**
+     * static util method for Item extraction from resulSet obtained after sql request
+     *
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
     public static Item extractItemFromGoodsTable(ResultSet rs) throws SQLException {
         Item item = new Item();
         item.setProductID(rs.getInt("id"));
@@ -106,7 +149,15 @@ public class ProductManager {
                 .getName());
         return item;
     }
+    //TODO probably I have to move these two and similar methods in another managers to the DAO classes
 
+    /**
+     * static util method for Item extraction from resulSet obtained after sql request
+     *
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
     public static Item extractItemFromOrdersItems(ResultSet rs) throws SQLException {
         Item item = new Item();
         item.setProductID(rs.getInt("product_id"));
@@ -124,6 +175,15 @@ public class ProductManager {
         return item;
     }
 
+    /**
+     * return some quantity of products, needed for paginated view of one page
+     *
+     * @param req
+     * @param page
+     * @param recordsPerPage
+     * @return
+     * @throws DBException
+     */
     public List<Item> getGoods(HttpServletRequest req, int page, int recordsPerPage) throws DBException {
         List<Item> itemList = productDAO.getGoods(page, recordsPerPage);
         int noOfPages = productDAO.getNumberOfPage(recordsPerPage);
@@ -133,6 +193,12 @@ public class ProductManager {
         return itemList;
     }
 
+    /**
+     * add product to shopping cart.
+     *
+     * @param req
+     * @throws DBException
+     */
     public void addProductToCart(HttpServletRequest req) throws DBException {
         String identifier = req.getParameter("prod_identifier");
         HashMap<Item, Integer> cart = (HashMap<Item, Integer>) req.getSession().getAttribute("cart");
@@ -140,7 +206,12 @@ public class ProductManager {
         logger.trace("product successfully added to cart");
     }
 
-
+    /**
+     * delete item from existing order
+     *
+     * @param req
+     * @throws DBException
+     */
     public void deleteItemFromOrder(HttpServletRequest req) throws DBException {
         long deletedItemId = parseLong(req.getParameter("deleteItemId"));
         int productQuantity = Integer.parseInt(req.getParameter("productQuantity"));
@@ -149,6 +220,12 @@ public class ProductManager {
 
     }
 
+    /**
+     * delete whole order
+     *
+     * @param req
+     * @throws DBException
+     */
     public void deleteWholeOrder(HttpServletRequest req) throws DBException {
         long orderId = Long.parseLong(req.getParameter("deleteOrderId"));
         productDAO.deleteWholeOrder(orderId);
