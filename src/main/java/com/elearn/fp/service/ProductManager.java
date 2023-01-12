@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProductManager {
-
     private static ProductManager instance;
     public static List<Unit> unitList;
 

@@ -1,6 +1,7 @@
 package com.elearn.fp.controller;
 
 import com.elearn.fp.db.entity.Order;
+import com.elearn.fp.db.entity.UserRole;
 import com.elearn.fp.exception.DBException;
 import com.elearn.fp.db.entity.User;
 import com.elearn.fp.service.CheckManager;
@@ -31,6 +32,10 @@ public class ChecksController extends HttpServlet {
         String path = "/WEB-INF/view/checks.jsp";
         int recordsPerPage = 1;
         try {
+            if(usr.getRole() == UserRole.CASHIER){
+                double totalOrders  = CheckManager.getInstance().calcTodaySum();
+                req.getSession().setAttribute("totalOrdersForToday", totalOrders);
+            }
             if (req.getParameter("recordsPerPage") != null) {
                 recordsPerPage = Integer.parseInt(req.getParameter("recordsPerPage"));
                 req.getSession().setAttribute("recordsPerPage", recordsPerPage);

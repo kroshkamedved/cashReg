@@ -112,4 +112,13 @@ public class CheckManager {
     public List<Order> getTodayChecks() throws DBException {
         return checkDAO.getTodayChecks();
     }
+
+    public double calcTodaySum() throws DBException {
+        return getTodayChecks()
+                .stream()
+                .flatMap(o->o.getOrderItems().stream())
+                .mapToDouble(i->i.getProductPrice() * i.getProductQuantity())
+                .sum();
+
+    }
 }

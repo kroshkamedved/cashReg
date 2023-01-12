@@ -75,7 +75,7 @@ public class CheckDAO {
                 insertToOrderItems.executeUpdate();
                 ProductManager productManager = ProductManager.getInstance();
                 synchronized (productManager) {
-                    productManager.updateProductAfterPurchase(entry.getKey().getProductID(), entry.getValue());
+                    productManager.updateProductAfterPurchase(entry.getKey().getProductID(), entry.getKey().getProductQuantity() - entry.getValue());
                 }
             }
             connection.commit();

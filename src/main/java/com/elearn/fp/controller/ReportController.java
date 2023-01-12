@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
@@ -36,7 +37,14 @@ public class ReportController extends HttpServlet {
             if (req.getParameter("xreport") != null) {
                 isZreport = false;
             }
-            File report = new File("projTmp/" + "report_" + LocalDate.now() + ".pdf");
+            //TODO: find how to load "catalina.base" system variable
+            String catalinaPath = System.getProperty("CATALINA_BASE");
+            if (catalinaPath == null) {
+                catalinaPath = ".";
+            }
+            String path = String.format("%s/webapps/fp/WEB-INF/classes", catalinaPath);
+            logger.error(path);
+            File report = new File(path + "/tmp/" + "report_" + LocalDate.now() + ".pdf");
             report.getParentFile().mkdirs();
             report.createNewFile();
             PdfWriter.getInstance(document, new FileOutputStream(report));
@@ -90,6 +98,7 @@ public class ReportController extends HttpServlet {
             while ((bytes = fileInputStream.read()) != -1) {
                 responseOutputStream.write(bytes);
             }
+            Files.delete(report.toPath());
         } catch (DocumentException e) {
             logger.error("file cannot be created");
         } catch (FileNotFoundException e) {

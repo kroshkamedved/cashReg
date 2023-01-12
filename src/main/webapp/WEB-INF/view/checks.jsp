@@ -21,6 +21,9 @@
         </c:when>
         <c:when test="${usr.role eq UserRole.CASHIER}">
             <%@include file="includes/cashier_navbar.jsp" %>
+        <div style="text-align: center">
+            TOTAL SOLD FOR TODAY: ${totalOrdersForToday}
+        </div>
         <div class="container">
             <form action="/fp/cabinet/cashier_page/checks" method="get">
                 </c:when>
