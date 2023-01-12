@@ -31,7 +31,7 @@
                 maxTotal="10" maxIdle="4" maxWaitMillis="10000"
                 username="db_user" password="password"
                 driverClassName="org.mariadb.jdbc.Driver"
-                url="jdbc:mariadb://localhost:3306/epam_project_db?characterEncoding=UTF-8"
+                url="jdbc:mariadb://192.168.88.21:3306/epam_project_db?characterEncoding=UTF-8"
                 defaultTransactionIsolation="READ_COMMITTED"
                 defaultAutoCommit="true"/>
 
